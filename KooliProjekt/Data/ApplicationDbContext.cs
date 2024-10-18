@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using KooliProjekt.Data;
 
 namespace KooliProjekt.Data
 {
@@ -9,5 +10,11 @@ namespace KooliProjekt.Data
             : base(options)
         {
         }
+
+        public DbSet<DataCarrier> DataCarriers{ get; set; }
+        public DbSet<ProgramMusic> ProgramMusics { get; set; }
+        public DbSet<MusicTrack> MusicTracks { get; set; }
+        public DbSet<Artist> Artist { get; set; } = default!;
+
     }
 }
