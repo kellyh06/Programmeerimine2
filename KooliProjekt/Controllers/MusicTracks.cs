@@ -9,22 +9,22 @@ using KooliProjekt.Data;
 
 namespace KooliProjekt.Controllers
 {
-    public class ArtistsController : Controller
+    public class MusicTracks : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ArtistsController(ApplicationDbContext context)
+        public MusicTracks(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Artists
+        // GET: MusicTracks
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Artist.GetPagedAsync(page, 10));
+            return View(await _context.MusicTracks.GetPagedAsync(page, 10));
         }
 
-        // GET: Artists/Details/5
+        // GET: MusicTracks/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,39 +32,39 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist
+            var musicTrack = await _context.MusicTracks
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (artist == null)
+            if (musicTrack == null)
             {
                 return NotFound();
             }
 
-            return View(artist);
+            return View(musicTrack);
         }
 
-        // GET: Artists/Create
+        // GET: MusicTracks/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Artists/Create
+        // POST: MusicTracks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Artist artist)
+        public async Task<IActionResult> Create([Bind("Id,Title,Artist,Year,Pace")] MusicTrack musicTrack)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(artist);
+                _context.Add(musicTrack);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(artist);
+            return View(musicTrack);
         }
 
-        // GET: Artists/Edit/5
+        // GET: MusicTracks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +72,22 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist.FindAsync(id);
-            if (artist == null)
+            var musicTrack = await _context.MusicTracks.FindAsync(id);
+            if (musicTrack == null)
             {
                 return NotFound();
             }
-            return View(artist);
+            return View(musicTrack);
         }
 
-        // POST: Artists/Edit/5
+        // POST: MusicTracks/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Artist artist)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Artist,Year,Pace")] MusicTrack musicTrack)
         {
-            if (id != artist.Id)
+            if (id != musicTrack.Id)
             {
                 return NotFound();
             }
@@ -96,12 +96,12 @@ namespace KooliProjekt.Controllers
             {
                 try
                 {
-                    _context.Update(artist);
+                    _context.Update(musicTrack);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ArtistExists(artist.Id))
+                    if (!MusicTrackExists(musicTrack.Id))
                     {
                         return NotFound();
                     }
@@ -112,10 +112,10 @@ namespace KooliProjekt.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(artist);
+            return View(musicTrack);
         }
 
-        // GET: Artists/Delete/5
+        // GET: MusicTracks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,34 +123,34 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist
+            var musicTrack = await _context.MusicTracks
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (artist == null)
+            if (musicTrack == null)
             {
                 return NotFound();
             }
 
-            return View(artist);
+            return View(musicTrack);
         }
 
-        // POST: Artists/Delete/5
+        // POST: MusicTracks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var artist = await _context.Artist.FindAsync(id);
-            if (artist != null)
+            var musicTrack = await _context.MusicTracks.FindAsync(id);
+            if (musicTrack != null)
             {
-                _context.Artist.Remove(artist);
+                _context.MusicTracks.Remove(musicTrack);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ArtistExists(int id)
+        private bool MusicTrackExists(int id)
         {
-            return _context.Artist.Any(e => e.Id == id);
+            return _context.MusicTracks.Any(e => e.Id == id);
         }
     }
 }

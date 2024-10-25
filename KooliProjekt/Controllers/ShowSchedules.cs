@@ -9,22 +9,22 @@ using KooliProjekt.Data;
 
 namespace KooliProjekt.Controllers
 {
-    public class ArtistsController : Controller
+    public class ShowSchedules : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ArtistsController(ApplicationDbContext context)
+        public ShowSchedules(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Artists
+        // GET: ShowSchedules
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Artist.GetPagedAsync(page, 10));
+            return View(await _context.ShowSchedule.GetPagedAsync(page, 10));
         }
 
-        // GET: Artists/Details/5
+        // GET: ShowSchedules/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,39 +32,39 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist
+            var showSchedule = await _context.ShowSchedule
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (artist == null)
+            if (showSchedule == null)
             {
                 return NotFound();
             }
 
-            return View(artist);
+            return View(showSchedule);
         }
 
-        // GET: Artists/Create
+        // GET: ShowSchedules/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Artists/Create
+        // POST: ShowSchedules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Artist artist)
+        public async Task<IActionResult> Create([Bind("Id,date")] ShowSchedule showSchedule)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(artist);
+                _context.Add(showSchedule);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(artist);
+            return View(showSchedule);
         }
 
-        // GET: Artists/Edit/5
+        // GET: ShowSchedules/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +72,22 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist.FindAsync(id);
-            if (artist == null)
+            var showSchedule = await _context.ShowSchedule.FindAsync(id);
+            if (showSchedule == null)
             {
                 return NotFound();
             }
-            return View(artist);
+            return View(showSchedule);
         }
 
-        // POST: Artists/Edit/5
+        // POST: ShowSchedules/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Artist artist)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,date")] ShowSchedule showSchedule)
         {
-            if (id != artist.Id)
+            if (id != showSchedule.Id)
             {
                 return NotFound();
             }
@@ -96,12 +96,12 @@ namespace KooliProjekt.Controllers
             {
                 try
                 {
-                    _context.Update(artist);
+                    _context.Update(showSchedule);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ArtistExists(artist.Id))
+                    if (!ShowScheduleExists(showSchedule.Id))
                     {
                         return NotFound();
                     }
@@ -112,10 +112,10 @@ namespace KooliProjekt.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(artist);
+            return View(showSchedule);
         }
 
-        // GET: Artists/Delete/5
+        // GET: ShowSchedules/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,34 +123,34 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist
+            var showSchedule = await _context.ShowSchedule
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (artist == null)
+            if (showSchedule == null)
             {
                 return NotFound();
             }
 
-            return View(artist);
+            return View(showSchedule);
         }
 
-        // POST: Artists/Delete/5
+        // POST: ShowSchedules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var artist = await _context.Artist.FindAsync(id);
-            if (artist != null)
+            var showSchedule = await _context.ShowSchedule.FindAsync(id);
+            if (showSchedule != null)
             {
-                _context.Artist.Remove(artist);
+                _context.ShowSchedule.Remove(showSchedule);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ArtistExists(int id)
+        private bool ShowScheduleExists(int id)
         {
-            return _context.Artist.Any(e => e.Id == id);
+            return _context.ShowSchedule.Any(e => e.Id == id);
         }
     }
 }

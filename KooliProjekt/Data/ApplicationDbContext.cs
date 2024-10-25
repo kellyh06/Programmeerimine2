@@ -15,6 +15,7 @@ namespace KooliProjekt.Data
         public DbSet<ProgramMusic> ProgramMusics { get; set; }
         public DbSet<MusicTrack> MusicTracks { get; set; }
         public DbSet<Artist> Artist { get; set; } = default!;
+        public DbSet<KooliProjekt.Data.ShowSchedule> ShowSchedule { get; set; } = default!;
 
     }
 }

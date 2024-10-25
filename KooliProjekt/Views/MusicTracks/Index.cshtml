@@ -1,4 +1,4 @@
-﻿@model PagedResult<KooliProjekt.Data.Artist>
+﻿@model PagedResult<KooliProjekt.Data.MusicTrack>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +13,16 @@
     <thead>
         <tr>
             <th>
-                Name
+                Title
+            </th>
+            <th>
+                Artist
+            </th>
+            <th>
+                Year
+            </th>
+            <th>
+                Pace
             </th>
             <th></th>
         </tr>
@@ -22,7 +31,16 @@
 @foreach (var item in Model.Results) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Artist)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pace)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
