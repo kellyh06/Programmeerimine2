@@ -3,26 +3,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
 {
-    public class ArtistService : IArtistService
+    public class MusicTrackService : IMusicTrackService
     {
         private readonly ApplicationDbContext _context;
 
-        public ArtistService(ApplicationDbContext context)
+        public MusicTrackService(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<PagedResult<Artist>> List(int page, int pageSize)
+        public async Task<PagedResult<MusicTrack>> List(int page, int pageSize)
         {
-            return await _context.Artist.GetPagedAsync(page, 5);
+            return await _context.MusicTracks.GetPagedAsync(page, 5);
         }
 
-        public async Task<Artist> Get(int id)
+        public async Task<MusicTrack> Get(int id)
         {
-            return await _context.Artist.FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.MusicTracks.FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task Save(Artist list)
+        public async Task Save(MusicTrack list)
         {
             if (list.Id == 0)
             {
@@ -38,10 +38,10 @@ namespace KooliProjekt.Services
 
         public async Task Delete(int id)
         {
-            var todoList = await _context.Artist.FindAsync(id);
+            var todoList = await _context.MusicTracks.FindAsync(id);
             if (todoList != null)
             {
-                _context.Artist.Remove(todoList);
+                _context.MusicTracks.Remove(todoList);
                 await _context.SaveChangesAsync();
             }
         }

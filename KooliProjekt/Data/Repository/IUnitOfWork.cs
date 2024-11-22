@@ -1,4 +1,6 @@
-﻿namespace KooliProjekt.Data.Repositories
+﻿using KooliProjekt.Data.Repository;
+
+namespace KooliProjekt.Data.Repositories
 {
     public interface IUnitOfWork
     {
@@ -6,6 +8,6 @@
         Task Commit();
         Task Rollback();
 
-        IArtistListRepository ArtistListRepository { get; }
+        IArtistRepository ArtistRepository { get; }
     }
 }

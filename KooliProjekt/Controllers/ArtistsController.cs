@@ -6,22 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 
 namespace KooliProjekt.Controllers
 {
     public class ArtistsController : Controller
     {
+        private readonly IArtistService _artistService;
         private readonly ApplicationDbContext _context;
 
-        public ArtistsController(ApplicationDbContext context)
+        public ArtistsController(ApplicationDbContext context, IArtistService artistService)
         {
             _context = context;
+            _artistService = artistService;
         }
 
         // GET: Artists
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Artist.GetPagedAsync(page, 10));
+            return View(await _artistService.List(page, 10));
         }
 
         // GET: Artists/Details/5
@@ -32,8 +35,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var artist = await _artistService.Get(id.Value);
             if (artist == null)
             {
                 return NotFound();
@@ -57,8 +59,7 @@ namespace KooliProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(artist);
-                await _context.SaveChangesAsync();
+                await _artistService.Save(artist);
                 return RedirectToAction(nameof(Index));
             }
             return View(artist);
@@ -72,7 +73,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist.FindAsync(id);
+            var artist = await _artistService.Get(id.Value);
             if (artist == null)
             {
                 return NotFound();
@@ -94,22 +95,8 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(artist);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ArtistExists(artist.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _artistService.Save(artist);
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(artist);
@@ -146,11 +133,6 @@ namespace KooliProjekt.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ArtistExists(int id)
-        {
-            return _context.Artist.Any(e => e.Id == id);
         }
     }
 }

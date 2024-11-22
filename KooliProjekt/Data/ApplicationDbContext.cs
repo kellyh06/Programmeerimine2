@@ -13,6 +13,7 @@ namespace KooliProjekt.Data
 
         public DbSet<DataCarrier> DataCarriers{ get; set; }
         public DbSet<ProgramMusic> ProgramMusics { get; set; }
+        public DbSet<DataCarrierMusic> DataCarrierMusics { get; set; }
         public DbSet<MusicTrack> MusicTracks { get; set; }
         public DbSet<Artist> Artist { get; set; } = default!;
         public DbSet<KooliProjekt.Data.ShowSchedule> ShowSchedule { get; set; } = default!;
