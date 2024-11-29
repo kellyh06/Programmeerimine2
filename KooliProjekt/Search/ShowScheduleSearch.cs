@@ -1,8 +1,8 @@
 ﻿namespace KooliProjekt.Search
 {
-    public class ArtistSearch
+    public class ShowScheduleSearch
     {
         public string Keyword { get; set; }
-        public string Name { get; set; }
+        public string Date { get; set; }
     }
 }

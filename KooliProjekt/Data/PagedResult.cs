@@ -1,4 +1,6 @@
-﻿namespace KooliProjekt.Data
+﻿using System.Collections.Generic;
+
+namespace KooliProjekt.Data
 {
     public class PagedResult<T> : PagedResultBase where T : class
     {

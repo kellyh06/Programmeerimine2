@@ -1,5 +1,7 @@
 ﻿using KooliProjekt.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace KooliProjekt.Controllers
@@ -15,6 +17,16 @@ namespace KooliProjekt.Controllers
 
         public IActionResult Index()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Index(IFormFile myFile)
+        {
+            using (var stream = myFile.OpenReadStream())
+            {
+                stream.Seek(0,SeekOrigin.End);
+            }
             return View();
         }
 
