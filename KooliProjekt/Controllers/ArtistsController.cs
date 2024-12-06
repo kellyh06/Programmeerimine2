@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
 using KooliProjekt.Services;
+using KooliProjekt.Models;
 
 namespace KooliProjekt.Controllers
 {
@@ -22,9 +23,12 @@ namespace KooliProjekt.Controllers
         }
 
         // GET: Artists
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, ArtistsIndexModel model = null)
         {
-            return View(await _artistService.List(page, 10));
+            model = model ?? new ArtistsIndexModel();
+            model.Data = await _artistService.List(page, 10, model.Search);
+
+            return View(model);
         }
 
         // GET: Artists/Details/5

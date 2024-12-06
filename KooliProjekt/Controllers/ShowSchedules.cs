@@ -6,22 +6,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
+using KooliProjekt.Services;
+using KooliProjekt.Models;
 
 namespace KooliProjekt.Controllers
 {
     public class ShowSchedules : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IShowScheduleService _service;
 
-        public ShowSchedules(ApplicationDbContext context)
+        public ShowSchedules(ApplicationDbContext context, IShowScheduleService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: ShowSchedules
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, ShowSchedulesIndexModel model = null)
         {
-            return View(await _context.ShowSchedule.GetPagedAsync(page, 10));
+            model = model ?? new ShowSchedulesIndexModel();
+            model.Data = await _service.List(page, 5, model.Search);
+
+            return View(model);
         }
 
         // GET: ShowSchedules/Details/5

@@ -22,6 +22,7 @@ namespace KooliProjekt
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IArtistService, ArtistService>();
+            builder.Services.AddScoped<IShowScheduleService, ShowScheduleService>();
 
             var app = builder.Build();
 

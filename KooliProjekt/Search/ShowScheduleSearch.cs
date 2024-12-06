@@ -3,6 +3,6 @@
     public class ShowScheduleSearch
     {
         public string Keyword { get; set; }
-        public string Date { get; set; }
+        public DateTime? Date { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Data;
+using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
@@ -12,9 +13,19 @@ namespace KooliProjekt.Services
             _context = context;
         }
 
-        public async Task<PagedResult<Artist>> List(int page, int pageSize)
+        public async Task<PagedResult<Artist>> List(int page, int pageSize, ArtistSearch search = null)
         {
-            return await _context.Artist.GetPagedAsync(page, 5);
+            var query =  _context.Artist.AsQueryable();
+
+            if(search != null)
+            {
+                if(!string.IsNullOrWhiteSpace(search.Name))
+                {
+                    query = query.Where(artist => artist.Name.Contains(search.Name));
+                }
+            }
+
+            return await query.GetPagedAsync(page, 5);
         }
 
         public async Task<Artist> Get(int id)
