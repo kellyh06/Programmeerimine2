@@ -23,6 +23,7 @@ namespace KooliProjekt
 
             builder.Services.AddScoped<IArtistService, ArtistService>();
             builder.Services.AddScoped<IShowScheduleService, ShowScheduleService>();
+            builder.Services.AddScoped<IMusicTrackService, MusicTrackService>();
 
             var app = builder.Build();
 

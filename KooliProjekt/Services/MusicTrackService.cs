@@ -17,7 +17,7 @@ namespace KooliProjekt.Services
             return await _context.MusicTracks.GetPagedAsync(page, 5);
         }
 
-        public async Task<MusicTrack> Get(int id)
+        public async Task<MusicTrack> Get(int? id)
         {
             return await _context.MusicTracks.FirstOrDefaultAsync(m => m.Id == id);
         }

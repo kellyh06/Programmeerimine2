@@ -6,22 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 
 namespace KooliProjekt.Controllers
 {
     public class MusicTracks : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMusicTrackService _service;
 
-        public MusicTracks(ApplicationDbContext context)
+        public MusicTracks(ApplicationDbContext context, IMusicTrackService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: MusicTracks
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.MusicTracks.GetPagedAsync(page, 10));
+            return View(await _service.List(page, 5));
         }
 
         // GET: MusicTracks/Details/5
@@ -32,8 +35,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var musicTrack = await _context.MusicTracks
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var musicTrack = await _service.Get(id);
             if (musicTrack == null)
             {
                 return NotFound();
@@ -57,8 +59,7 @@ namespace KooliProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(musicTrack);
-                await _context.SaveChangesAsync();
+                await _service.Save(musicTrack);
                 return RedirectToAction(nameof(Index));
             }
             return View(musicTrack);
@@ -72,7 +73,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var musicTrack = await _context.MusicTracks.FindAsync(id);
+            var musicTrack = await _service.Get(id);
             if (musicTrack == null)
             {
                 return NotFound();
@@ -96,8 +97,7 @@ namespace KooliProjekt.Controllers
             {
                 try
                 {
-                    _context.Update(musicTrack);
-                    await _context.SaveChangesAsync();
+                    await _service.Save(musicTrack);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,8 +123,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var musicTrack = await _context.MusicTracks
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var musicTrack = await _service.Get(id);
             if (musicTrack == null)
             {
                 return NotFound();
@@ -138,13 +137,12 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var musicTrack = await _context.MusicTracks.FindAsync(id);
+            var musicTrack = await _service.Get(id);
             if (musicTrack != null)
             {
-                _context.MusicTracks.Remove(musicTrack);
+                await _service.Delete(musicTrack.Id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
