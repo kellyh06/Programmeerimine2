@@ -114,7 +114,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist
+            var artist = await _context.Artists
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (artist == null)
             {
@@ -129,10 +129,10 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var artist = await _context.Artist.FindAsync(id);
+            var artist = await _context.Artists.FindAsync(id);
             if (artist != null)
             {
-                _context.Artist.Remove(artist);
+                _context.Artists.Remove(artist);
             }
 
             await _context.SaveChangesAsync();

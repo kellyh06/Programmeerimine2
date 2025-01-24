@@ -4,7 +4,7 @@
     {
         public static void Generate(ApplicationDbContext context)
         {
-            if (context.Artist.Any())
+            if (context.Artists.Any())
             {
                 return; // Don't seed if there are already artists in the database
             }
@@ -15,7 +15,7 @@
             };
 
             // Add the list (which contains the artist) to the context
-            context.Artist.Add(list);
+            context.Artists.Add(list);
 
             // Save changes to the database
             context.SaveChanges();

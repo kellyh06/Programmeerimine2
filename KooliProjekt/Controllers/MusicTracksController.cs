@@ -6,16 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 
 namespace KooliProjekt.Controllers
 {
-    public class MusicTracks : Controller
+    public class MusicTracksController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMusicTrackService _musicTrackService;
 
-        public MusicTracks(ApplicationDbContext context)
+        public MusicTracksController(ApplicationDbContext context, IMusicTrackService musicTrackService)
         {
             _context = context;
+            _musicTrackService = musicTrackService;
         }
 
         // GET: MusicTracks

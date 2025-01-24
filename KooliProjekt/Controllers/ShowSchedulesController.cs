@@ -11,22 +11,22 @@ using KooliProjekt.Models;
 
 namespace KooliProjekt.Controllers
 {
-    public class ShowSchedules : Controller
+    public class ShowSchedulesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IShowScheduleService _service;
+        private readonly IShowScheduleService _showScheduleService;
 
-        public ShowSchedules(ApplicationDbContext context, IShowScheduleService service)
+        public ShowSchedulesController(IShowScheduleService showScheduleService, ApplicationDbContext context)
         {
+            _showScheduleService = showScheduleService;
             _context = context;
-            _service = service;
         }
 
         // GET: ShowSchedules
         public async Task<IActionResult> Index(int page = 1, ShowSchedulesIndexModel model = null)
         {
             model = model ?? new ShowSchedulesIndexModel();
-            model.Data = await _service.List(page, 5, model.Search);
+            model.Data = await _showScheduleService.List(page, 10, model.Search);
 
             return View(model);
         }
