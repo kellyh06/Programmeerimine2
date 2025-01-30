@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Data.Repository;
+using KooliProjekt.Services;
 
 namespace KooliProjekt.Data.Repositories
 {
@@ -7,17 +8,18 @@ namespace KooliProjekt.Data.Repositories
         private readonly ApplicationDbContext _context;
 
         public UnitOfWork(ApplicationDbContext context,
-            IArtistRepository todoItemRepository,
-            IArtistRepository todoListRepository)
+            IArtistRepository artistRepository, IMusicTrackRepository musicTrackRepository, IShowScheduleRepository showScheduleRepository)
         {
             _context = context;
 
-            TodoItemRepository = todoItemRepository;
-            TodoListRepository = todoListRepository;
+            ArtistRepository = artistRepository;
+            MusicTrackRepository = musicTrackRepository;
+            ShowScheduleRepository = showScheduleRepository;
         }
 
-        public IArtistRepository TodoItemRepository { get; private set; }
-        public IArtistRepository TodoListRepository { get; private set; }
+        public IArtistRepository ArtistRepository { get; private set; }
+        public IMusicTrackRepository MusicTrackRepository { get; private set; }
+        public IShowScheduleRepository ShowScheduleRepository { get; private set; }
 
         public async Task BeginTransaction()
         {
