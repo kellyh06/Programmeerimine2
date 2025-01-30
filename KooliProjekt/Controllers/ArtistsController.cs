@@ -14,11 +14,9 @@ namespace KooliProjekt.Controllers
     public class ArtistsController : Controller
     {
         private readonly IArtistService _artistService;
-        private readonly ApplicationDbContext _context;
 
-        public ArtistsController(ApplicationDbContext context, IArtistService artistService)
+        public ArtistsController(IArtistService artistService)
         {
-            _context = context;
             _artistService = artistService;
         }
 
@@ -114,8 +112,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artists
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var artist = await _artistService.Get(id.Value);
             if (artist == null)
             {
                 return NotFound();
@@ -129,13 +126,8 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var artist = await _context.Artists.FindAsync(id);
-            if (artist != null)
-            {
-                _context.Artists.Remove(artist);
-            }
+            await _artistService.Delete(id);
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }
