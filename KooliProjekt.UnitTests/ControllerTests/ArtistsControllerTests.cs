@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using KooliProjekt.Controllers;
 using KooliProjekt.Data;
+using KooliProjekt.Models;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -20,7 +21,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public ArtistsControllerTests()
         {
             _ArtistServiceMock = new Mock<IArtistService>();
-            _controller = new ArtistsController(null, _ArtistServiceMock.Object);
+            _controller = new ArtistsController(_ArtistServiceMock.Object);
         }
 
         [Fact]
@@ -41,18 +42,23 @@ namespace KooliProjekt.UnitTests.ControllerTests
                 PageSize = 5,
                 RowCount = 2
             };
-            _ArtistServiceMock.Setup(x => x.List(page, It.IsAny<int>(), null)).ReturnsAsync(pagedResult);
+            _ArtistServiceMock
+                .Setup(x => x.List(page, It.IsAny<int>(), null))
+                .ReturnsAsync(pagedResult);
 
             // Act
             var result = await _controller.Index(page) as ViewResult;
+            var model = result?.Model as ArtistsIndexModel;
 
             // Assert
             Assert.NotNull(result);
+            Assert.NotNull(model);
+            Assert.NotNull(model.Data);
             Assert.True(
                 string.IsNullOrEmpty(result.ViewName) ||
                 result.ViewName == "Index"
             );
-            Assert.Equal(pagedResult, result.Model);
+            Assert.Equal(pagedResult.Results, model.Data);
         }
 
         [Fact]
