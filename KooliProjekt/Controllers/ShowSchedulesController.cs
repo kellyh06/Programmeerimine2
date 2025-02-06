@@ -7,27 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
 using KooliProjekt.Services;
+using KooliProjekt.Models;
 
 namespace KooliProjekt.Controllers
 {
-    public class MusicTracks : Controller
+    public class ShowSchedulesController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IMusicTrackService _service;
+        //private readonly ApplicationDbContext _context;
+        private readonly IShowScheduleService _service;
 
-        public MusicTracks(ApplicationDbContext context, IMusicTrackService service)
+        public ShowSchedulesController(IShowScheduleService service)
         {
-            _context = context;
             _service = service;
         }
 
-        // GET: MusicTracks
-        public async Task<IActionResult> Index(int page = 1)
+        // GET: ShowSchedules
+        public async Task<IActionResult> Index(int page = 1, ShowSchedulesIndexModel model = null)
         {
-            return View(await _service.List(page, 5));
+            model = model ?? new ShowSchedulesIndexModel();
+            model.Data = await _service.List(page, 5, model.Search);
+
+            return View(model);
         }
 
-        // GET: MusicTracks/Details/5
+        // GET: ShowSchedules/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,37 +38,37 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var musicTrack = await _service.Get(id);
-            if (musicTrack == null)
+            var showSchedule = await _service.Get(id);
+            if (showSchedule == null)
             {
                 return NotFound();
             }
 
-            return View(musicTrack);
+            return View(showSchedule);
         }
 
-        // GET: MusicTracks/Create
+        // GET: ShowSchedules/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: MusicTracks/Create
+        // POST: ShowSchedules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Artist,Year,Pace")] MusicTrack musicTrack)
+        public async Task<IActionResult> Create([Bind("Id,date")] ShowSchedule showSchedule)
         {
             if (ModelState.IsValid)
             {
-                await _service.Save(musicTrack);
+                await _service.Save(showSchedule);
                 return RedirectToAction(nameof(Index));
             }
-            return View(musicTrack);
+            return View(showSchedule);
         }
 
-        // GET: MusicTracks/Edit/5
+        // GET: ShowSchedules/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,49 +76,35 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var musicTrack = await _service.Get(id);
-            if (musicTrack == null)
+            var showSchedule = await _service.Get(id);
+            if (showSchedule == null)
             {
                 return NotFound();
             }
-            return View(musicTrack);
+            return View(showSchedule);
         }
 
-        // POST: MusicTracks/Edit/5
+        // POST: ShowSchedules/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Artist,Year,Pace")] MusicTrack musicTrack)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,date")] ShowSchedule showSchedule)
         {
-            if (id != musicTrack.Id)
+            if (id != showSchedule.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    await _service.Save(musicTrack);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MusicTrackExists(musicTrack.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _service.Save(showSchedule);
                 return RedirectToAction(nameof(Index));
             }
-            return View(musicTrack);
+            return View(showSchedule);
         }
 
-        // GET: MusicTracks/Delete/5
+        // GET: ShowSchedules/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,32 +112,28 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var musicTrack = await _service.Get(id);
-            if (musicTrack == null)
+            var showSchedule = await _service.Get(id);
+            if (showSchedule == null)
             {
                 return NotFound();
             }
 
-            return View(musicTrack);
+            return View(showSchedule);
         }
 
-        // POST: MusicTracks/Delete/5
+        // POST: ShowSchedules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var musicTrack = await _service.Get(id);
-            if (musicTrack != null)
+            var showSchedule = await _service.Get(id);
+            if (showSchedule != null)
             {
-                await _service.Delete(musicTrack.Id);
+                await _service.Delete(id);
             }
 
+            await _service.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool MusicTrackExists(int id)
-        {
-            return _context.MusicTracks.Any(e => e.Id == id);
         }
     }
 }

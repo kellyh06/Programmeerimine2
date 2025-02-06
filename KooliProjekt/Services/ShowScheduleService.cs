@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
 {
-    public class ShowScheduleService : IShowScheduleService
+    public class ShowScheduleService :  IShowScheduleService
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
 
         public ShowScheduleService(ApplicationDbContext context)
         {
@@ -30,7 +30,7 @@ namespace KooliProjekt.Services
             return await query.GetPagedAsync(page, 5);
         }
 
-        public async Task<ShowSchedule> Get(int id)
+        public async Task<ShowSchedule> Get(int? id)
         {
             return await _context.ShowSchedule.FirstOrDefaultAsync(m => m.Id == id);
         }

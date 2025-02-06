@@ -17,10 +17,17 @@ namespace KooliProjekt.Controllers
         [HttpPost]
         public IActionResult Index(IFormFile myFile)
         {
+            if (myFile == null)
+            {
+                ModelState.AddModelError("myFile", "File cannot be null");
+                return View();
+            }
+
             using (var stream = myFile.OpenReadStream())
             {
-                stream.Seek(0,SeekOrigin.End);
+                stream.Seek(0, SeekOrigin.End);
             }
+
             return View();
         }
 
