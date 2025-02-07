@@ -6,7 +6,7 @@ namespace KooliProjekt.Data.Repository
     {
         Task<ShowSchedule> Get(int id);
         Task<PagedResult<ShowSchedule>> List(int page, int pageSize, ShowScheduleSearch search = null);
-        Task Save(ShowSchedule showSchedule);
+        Task Save(ShowSchedule entity);
         Task Delete(int id);
     }
 }
