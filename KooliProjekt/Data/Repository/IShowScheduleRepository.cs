@@ -1,8 +1,12 @@
-﻿namespace KooliProjekt.Data.Repository
+﻿using KooliProjekt.Search;
+
+namespace KooliProjekt.Data.Repository
 {
     public interface IShowScheduleRepository
     {
         Task<ShowSchedule> Get(int id);
-        Task<PagedResult<ShowSchedule>> List(int page, int pageSize);
+        Task<PagedResult<ShowSchedule>> List(int page, int pageSize, ShowScheduleSearch search = null);
+        Task Save(ShowSchedule showSchedule);
+        Task Delete(int id);
     }
 }

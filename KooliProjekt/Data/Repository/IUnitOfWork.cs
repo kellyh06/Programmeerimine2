@@ -9,5 +9,7 @@ namespace KooliProjekt.Data.Repositories
         Task Rollback();
 
         IArtistRepository ArtistRepository { get; }
+        IShowScheduleRepository ShowScheduleRepository { get; }
+        IMusicTrackRepository MusicTrackRepository { get; }
     }
 }

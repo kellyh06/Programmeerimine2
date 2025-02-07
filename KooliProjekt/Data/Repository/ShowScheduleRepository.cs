@@ -1,47 +1,35 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KooliProjekt.Data.Repository;
+using KooliProjekt.Search;
+using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Data.Repositories
 {
-    public class ShowScheduleRepository<T> where T : Entity
+    public class ShowScheduleRepository : BaseRepository<ShowSchedule>, IShowScheduleRepository
     {
-        protected ApplicationDbContext DbContext { get; }
 
-        public ShowScheduleRepository(ApplicationDbContext context)
+        public ShowScheduleRepository(ApplicationDbContext context) : base(context) 
         {
-            DbContext = context;
+        }
+        public override async Task<ShowSchedule> Get(int id)
+        {
+            return await DbContext.ShowSchedule.FindAsync(id);
         }
 
-        public virtual async Task<T> Get(int id)
+        public virtual async Task<PagedResult<ShowSchedule>> List(int page, int pageSize, ShowScheduleSearch search = null)
         {
-            return await DbContext.Set<T>().FindAsync(id);
-        }
+            var query = DbContext.ShowSchedule.AsQueryable();
 
-        public virtual async Task<PagedResult<T>> List(int page, int pageSize)
-        {
-            return await DbContext.Set<T>()
-                .OrderByDescending(x => x.Id)
-                .GetPagedAsync(page, pageSize);
-        }
-
-        public virtual async Task Save(T item)
-        {
-            if (item.Id == 0)
+            if (search != null)
             {
-                DbContext.Set<T>().Add(item);
-            }
-            else
-            {
-                DbContext.Set<T>().Update(item);
+                if (search.Date != null)
+                {
+                    var lower = search.Date.Value.Date;
+                    var upper = search.Date.Value.Date.AddDays(1);
+                    query = query.Where(showSchedule => showSchedule.date >= lower && showSchedule.date < upper);
+                }
             }
 
-            await DbContext.SaveChangesAsync();
-        }
-
-        public virtual async Task Delete(int id)
-        {
-            await DbContext.Set<T>()
-                .Where(item => item.Id == id)
-                .ExecuteDeleteAsync();
+            return await query.GetPagedAsync(page, 5);
         }
     }
 }

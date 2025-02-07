@@ -2,10 +2,8 @@
 
 namespace KooliProjekt.Data
 {
-    public class ShowSchedule
+    public class ShowSchedule : Entity
     {
-        [Required]
-        public int Id { get; set; }
 
         [Required]
         public DateTime date { get; set; }

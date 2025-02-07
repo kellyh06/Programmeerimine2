@@ -9,6 +9,5 @@ namespace KooliProjekt.Services
         Task<ShowSchedule> Get(int? id);
         Task Save(ShowSchedule list);
         Task Delete(int id);
-        Task SaveChangesAsync();
     }
 }
