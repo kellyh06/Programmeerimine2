@@ -224,8 +224,8 @@ var assemblies = [
       { "name": "KooliProjekt.Components.PagerViewComponent", "rp": "KooliProjekt_PagerViewComponent.html", "cl": 0, "ucl": 3, "cal": 3, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Controllers.ArtistsController", "rp": "KooliProjekt_ArtistsController.html", "cl": 42, "ucl": 25, "cal": 67, "tl": 140, "cb": 14, "tb": 22, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Controllers.HomeController", "rp": "KooliProjekt_HomeController.html", "cl": 9, "ucl": 11, "cal": 20, "tl": 45, "cb": 3, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KooliProjekt.Controllers.MusicTracks", "rp": "KooliProjekt_MusicTracks.html", "cl": 0, "ucl": 78, "cal": 78, "tl": 154, "cb": 0, "tb": 22, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KooliProjekt.Controllers.ShowSchedules", "rp": "KooliProjekt_ShowSchedules.html", "cl": 0, "ucl": 85, "cal": 85, "tl": 163, "cb": 0, "tb": 24, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KooliProjekt.Controllers.MusicTracks", "rp": "KooliProjekt_MusicTracks.html", "cl": 0, "ucl": 65, "cal": 65, "tl": 134, "cb": 0, "tb": 20, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KooliProjekt.Controllers.ShowSchedulesController", "rp": "KooliProjekt_ShowSchedulesController.html", "cl": 0, "ucl": 67, "cal": 67, "tl": 138, "cb": 0, "tb": 22, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Data.ApplicationDbContext", "rp": "KooliProjekt_ApplicationDbContext.html", "cl": 0, "ucl": 9, "cal": 9, "tl": 22, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Data.Artist", "rp": "KooliProjekt_Artist.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 12, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Data.DataCarrier", "rp": "KooliProjekt_DataCarrier.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 14, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -244,10 +244,10 @@ var assemblies = [
       { "name": "KooliProjekt.Data.Repositories.ArtistRepository<T>", "rp": "KooliProjekt_ArtistRepository_1.html", "cl": 0, "ucl": 28, "cal": 28, "tl": 47, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Data.Repositories.BaseRepository<T>", "rp": "KooliProjekt_BaseRepository_1.html", "cl": 0, "ucl": 28, "cal": 28, "tl": 47, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Data.Repositories.MusicTrackRepository<T>", "rp": "KooliProjekt_MusicTrackRepository_1.html", "cl": 0, "ucl": 28, "cal": 28, "tl": 47, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KooliProjekt.Data.Repositories.ShowScheduleRepository<T>", "rp": "KooliProjekt_ShowScheduleRepository_1.html", "cl": 0, "ucl": 28, "cal": 28, "tl": 47, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KooliProjekt.Data.Repositories.ShowScheduleRepository", "rp": "KooliProjekt_ShowScheduleRepository.html", "cl": 0, "ucl": 19, "cal": 19, "tl": 35, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Data.Repositories.UnitOfWork", "rp": "KooliProjekt_UnitOfWork.html", "cl": 0, "ucl": 20, "cal": 20, "tl": 39, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Data.SeedData", "rp": "KooliProjekt_SeedData.html", "cl": 0, "ucl": 188, "cal": 188, "tl": 205, "cb": 0, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KooliProjekt.Data.ShowSchedule", "rp": "KooliProjekt_ShowSchedule.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KooliProjekt.Data.ShowSchedule", "rp": "KooliProjekt_ShowSchedule.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 11, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Models.ArtistsIndexModel", "rp": "KooliProjekt_ArtistsIndexModel.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 11, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Models.ErrorViewModel", "rp": "KooliProjekt_ErrorViewModel.html", "cl": 1, "ucl": 1, "cal": 2, "tl": 9, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Models.MusicTrakcsIndexModel", "rp": "KooliProjekt_MusicTrakcsIndexModel.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 11, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -256,12 +256,12 @@ var assemblies = [
       { "name": "KooliProjekt.Search.ArtistSearch", "rp": "KooliProjekt_ArtistSearch.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 8, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Search.MusicTrackSearch", "rp": "KooliProjekt_MusicTrackSearch.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 11, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Search.ShowScheduleSearch", "rp": "KooliProjekt_ShowScheduleSearch.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 8, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KooliProjekt.Services.ArtistService", "rp": "KooliProjekt_ArtistService.html", "cl": 0, "ucl": 36, "cal": 36, "tl": 60, "cb": 0, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KooliProjekt.Services.ArtistService", "rp": "KooliProjekt_ArtistService.html", "cl": 0, "ucl": 18, "cal": 18, "tl": 39, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Services.DataCarrierMusicService", "rp": "KooliProjekt_DataCarrierMusicService.html", "cl": 0, "ucl": 28, "cal": 28, "tl": 49, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Services.DataCarrierService", "rp": "KooliProjekt_DataCarrierService.html", "cl": 0, "ucl": 28, "cal": 28, "tl": 49, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KooliProjekt.Services.MusicTrackService", "rp": "KooliProjekt_MusicTrackService.html", "cl": 0, "ucl": 28, "cal": 28, "tl": 49, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KooliProjekt.Services.MusicTrackService", "rp": "KooliProjekt_MusicTrackService.html", "cl": 0, "ucl": 18, "cal": 18, "tl": 39, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "KooliProjekt.Services.ProgramMusicService", "rp": "KooliProjekt_ProgramMusicService.html", "cl": 0, "ucl": 28, "cal": 28, "tl": 49, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "KooliProjekt.Services.ShowScheduleService", "rp": "KooliProjekt_ShowScheduleService.html", "cl": 0, "ucl": 38, "cal": 38, "tl": 62, "cb": 0, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "KooliProjekt.Services.ShowScheduleService", "rp": "KooliProjekt_ShowScheduleService.html", "cl": 0, "ucl": 18, "cal": 18, "tl": 42, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -275,18 +275,6 @@ var riskHotspotMetrics = [
 ];
 
 var riskHotspots = [
-  {
-    "assembly": "KooliProjekt", "class": "KooliProjekt.Controllers.MusicTracks", "reportPath": "KooliProjekt_MusicTracks.html", "methodName": "Edit()", "methodShortName": "Edit()", "fileIndex": 0, "line": 90,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "KooliProjekt", "class": "KooliProjekt.Controllers.ShowSchedules", "reportPath": "KooliProjekt_ShowSchedules.html", "methodName": "Edit()", "methodShortName": "Edit()", "fileIndex": 0, "line": 96,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
   {
     "assembly": "KooliProjekt", "class": "KooliProjekt.Data.SeedData", "reportPath": "KooliProjekt_SeedData.html", "methodName": "Generate(KooliProjekt.Data.ApplicationDbContext)", "methodShortName": "Generate(...)", "fileIndex": 0, "line": 8,
     "metrics": [

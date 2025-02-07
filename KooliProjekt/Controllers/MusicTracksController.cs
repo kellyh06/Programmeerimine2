@@ -12,7 +12,6 @@ namespace KooliProjekt.Controllers
 {
     public class MusicTracks : Controller
     {
-        //private readonly ApplicationDbContext _context;
         private readonly IMusicTrackService _service;
 
         public MusicTracks(IMusicTrackService service)
@@ -20,13 +19,11 @@ namespace KooliProjekt.Controllers
             _service = service;
         }
 
-        // GET: MusicTracks
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _service.List(page, 5));
+            return View(await _service.List(page, 5, null));
         }
 
-        // GET: MusicTracks/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,13 +40,11 @@ namespace KooliProjekt.Controllers
             return View(musicTrack);
         }
 
-        // GET: MusicTracks/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: MusicTracks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -64,7 +59,6 @@ namespace KooliProjekt.Controllers
             return View(musicTrack);
         }
 
-        // GET: MusicTracks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,7 +74,6 @@ namespace KooliProjekt.Controllers
             return View(musicTrack);
         }
 
-        // POST: MusicTracks/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -100,7 +93,6 @@ namespace KooliProjekt.Controllers
             return View(musicTrack);
         }
 
-        // GET: MusicTracks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -117,7 +109,6 @@ namespace KooliProjekt.Controllers
             return View(musicTrack);
         }
 
-        // POST: MusicTracks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

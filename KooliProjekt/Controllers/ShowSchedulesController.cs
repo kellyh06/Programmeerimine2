@@ -13,7 +13,6 @@ namespace KooliProjekt.Controllers
 {
     public class ShowSchedulesController : Controller
     {
-        //private readonly ApplicationDbContext _context;
         private readonly IShowScheduleService _service;
 
         public ShowSchedulesController(IShowScheduleService service)
@@ -21,7 +20,6 @@ namespace KooliProjekt.Controllers
             _service = service;
         }
 
-        // GET: ShowSchedules
         public async Task<IActionResult> Index(int page = 1, ShowSchedulesIndexModel model = null)
         {
             model = model ?? new ShowSchedulesIndexModel();
@@ -30,7 +28,6 @@ namespace KooliProjekt.Controllers
             return View(model);
         }
 
-        // GET: ShowSchedules/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,13 +44,11 @@ namespace KooliProjekt.Controllers
             return View(showSchedule);
         }
 
-        // GET: ShowSchedules/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: ShowSchedules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +63,6 @@ namespace KooliProjekt.Controllers
             return View(showSchedule);
         }
 
-        // GET: ShowSchedules/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,7 +78,6 @@ namespace KooliProjekt.Controllers
             return View(showSchedule);
         }
 
-        // POST: ShowSchedules/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -104,7 +97,6 @@ namespace KooliProjekt.Controllers
             return View(showSchedule);
         }
 
-        // GET: ShowSchedules/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -121,7 +113,6 @@ namespace KooliProjekt.Controllers
             return View(showSchedule);
         }
 
-        // POST: ShowSchedules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -132,7 +123,6 @@ namespace KooliProjekt.Controllers
                 await _service.Delete(id);
             }
 
-            await _service.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

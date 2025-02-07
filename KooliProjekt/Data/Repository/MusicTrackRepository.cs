@@ -1,37 +1,57 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KooliProjekt.Data.Repository;
+using KooliProjekt.Search;
+using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Data.Repositories
 {
-    public class MusicTrackRepository<T> where T : Entity
+    public class MusicTrackRepository : BaseRepository<MusicTrack>, IMusicTrackRepository
     {
-        protected ApplicationDbContext DbContext { get; }
 
-        public MusicTrackRepository(ApplicationDbContext context)
+        public MusicTrackRepository(ApplicationDbContext context) : base(context)
         {
-            DbContext = context;
         }
 
-        public virtual async Task<T> Get(int id)
+        public override async Task<MusicTrack> Get(int id)
         {
-            return await DbContext.Set<T>().FindAsync(id);
+            return await DbContext.Set<MusicTrack>().FindAsync(id);
         }
 
-        public virtual async Task<PagedResult<T>> List(int page, int pageSize)
+        public virtual async Task<PagedResult<MusicTrack>> List(int page, int pageSize, MusicTrackSearch search = null)
         {
-            return await DbContext.Set<T>()
-                .OrderByDescending(x => x.Id)
-                .GetPagedAsync(page, pageSize);
+            var query = DbContext.MusicTracks.AsQueryable();
+
+            if (search != null)
+            {
+                if (!string.IsNullOrEmpty(search.Titel))
+                {
+                    query = query.Where(musicTrack => musicTrack.Title == search.Titel);
+                }
+                if (!string.IsNullOrEmpty(search.Artist))
+                {
+                    query = query.Where(musicTrack => musicTrack.Artist == search.Artist);
+                }
+                if (search.Year != null)
+                {
+                    query = query.Where(musicTrack => musicTrack.Year == search.Year);
+                }
+                if (search.Pace != null)
+                {
+                    query = query.Where(musicTrack => musicTrack.Pace == search.Pace);
+                }
+            }
+
+            return await query.GetPagedAsync(page, 5);
         }
 
-        public virtual async Task Save(T item)
+        public virtual async Task Save(MusicTrack item)
         {
             if (item.Id == 0)
             {
-                DbContext.Set<T>().Add(item);
+                DbContext.Set<MusicTrack>().Add(item);
             }
             else
             {
-                DbContext.Set<T>().Update(item);
+                DbContext.Set<MusicTrack>().Update(item);
             }
 
             await DbContext.SaveChangesAsync();
@@ -39,7 +59,7 @@ namespace KooliProjekt.Data.Repositories
 
         public virtual async Task Delete(int id)
         {
-            await DbContext.Set<T>()
+            await DbContext.Set<MusicTrack>()
                 .Where(item => item.Id == id)
                 .ExecuteDeleteAsync();
         }

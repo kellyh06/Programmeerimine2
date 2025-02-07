@@ -1,37 +1,44 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KooliProjekt.Data.Repository;
+using KooliProjekt.Search;
+using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Data.Repositories
 {
-    public class ArtistRepository<T> where T : Entity
+    public class ArtistRepository : BaseRepository<Artist>, IArtistRepository
     {
-        protected ApplicationDbContext DbContext { get; }
-
-        public ArtistRepository(ApplicationDbContext context)
+        public ArtistRepository(ApplicationDbContext context) : base(context)
         {
-            DbContext = context;
         }
 
-        public virtual async Task<T> Get(int id)
+        public override async Task<Artist> Get(int id)
         {
-            return await DbContext.Set<T>().FindAsync(id);
+            return await DbContext.Artist.FindAsync(id);
         }
 
-        public virtual async Task<PagedResult<T>> List(int page, int pageSize)
+        public virtual async Task<PagedResult<Artist>> List(int page, int pageSize, ArtistSearch search = null)
         {
-            return await DbContext.Set<T>()
-                .OrderByDescending(x => x.Id)
-                .GetPagedAsync(page, pageSize);
+            var query = DbContext.Artist.AsQueryable();
+
+            if (search != null)
+            {
+                if (search.Name != null)
+                {
+                    query = query.Where(artist => artist.Name == search.Name);
+                }
+            }
+
+            return await query.GetPagedAsync(page, 5);
         }
 
-        public virtual async Task Save(T item)
+        public virtual async Task Save(Artist item)
         {
             if (item.Id == 0)
             {
-                DbContext.Set<T>().Add(item);
+                DbContext.Set<Artist>().Add(item);
             }
             else
             {
-                DbContext.Set<T>().Update(item);
+                DbContext.Set<Artist>().Update(item);
             }
 
             await DbContext.SaveChangesAsync();
@@ -39,7 +46,7 @@ namespace KooliProjekt.Data.Repositories
 
         public virtual async Task Delete(int id)
         {
-            await DbContext.Set<T>()
+            await DbContext.Set<Artist>()
                 .Where(item => item.Id == id)
                 .ExecuteDeleteAsync();
         }

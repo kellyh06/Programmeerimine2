@@ -20,7 +20,6 @@ namespace KooliProjekt.Controllers
             _artistService = artistService;
         }
 
-        // GET: Artists
         public async Task<IActionResult> Index(int page = 1, ArtistsIndexModel model = null)
         {
             model = model ?? new ArtistsIndexModel();
@@ -29,7 +28,6 @@ namespace KooliProjekt.Controllers
             return View(model);
         }
 
-        // GET: Artists/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,13 +44,11 @@ namespace KooliProjekt.Controllers
             return View(artist);
         }
 
-        // GET: Artists/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Artists/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -67,7 +63,6 @@ namespace KooliProjekt.Controllers
             return View(artist);
         }
 
-        // GET: Artists/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,7 +78,6 @@ namespace KooliProjekt.Controllers
             return View(artist);
         }
 
-        // POST: Artists/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -104,7 +98,6 @@ namespace KooliProjekt.Controllers
             return View(artist);
         }
 
-        // GET: Artists/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -121,7 +114,6 @@ namespace KooliProjekt.Controllers
             return View(artist);
         }
 
-        // POST: Artists/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

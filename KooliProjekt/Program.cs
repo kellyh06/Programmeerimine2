@@ -1,4 +1,5 @@
 using KooliProjekt.Data;
+using KooliProjekt.Data.Repositories;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,7 @@ namespace KooliProjekt
             builder.Services.AddScoped<IArtistService, ArtistService>();
             builder.Services.AddScoped<IShowScheduleService, ShowScheduleService>();
             builder.Services.AddScoped<IMusicTrackService, MusicTrackService>();
-
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
