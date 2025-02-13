@@ -1,5 +1,6 @@
 using KooliProjekt.Data;
 using KooliProjekt.Data.Repositories;
+using KooliProjekt.Data.Repository;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,10 +23,13 @@ namespace KooliProjekt
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
+            builder.Services.AddScoped<IShowScheduleRepository, ShowScheduleRepository>();
+            builder.Services.AddScoped<IMusicTrackRepository, MusicTrackRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IArtistService, ArtistService>();
             builder.Services.AddScoped<IShowScheduleService, ShowScheduleService>();
             builder.Services.AddScoped<IMusicTrackService, MusicTrackService>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -2,7 +2,7 @@
 
 namespace KooliProjekt.Data
 {
-    public class MusicTrack
+    public class MusicTrack : Entity
     {
         [Required]
         public int Id { get; set; }

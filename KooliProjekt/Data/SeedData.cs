@@ -7,7 +7,7 @@ namespace KooliProjekt.Data
         public static void Generate(ApplicationDbContext context)
         {
             // artisyide genereerimine
-            if (!context.Artist.Any())
+            if (!context.Artists.Any())
             {
 
                 var list1 = new Artist
@@ -47,16 +47,16 @@ namespace KooliProjekt.Data
                     Name = "Artist 10"
                 };
                 // Add the list (which contains the artist) to the context
-                context.Artist.Add(list1);
-                context.Artist.Add(list2);
-                context.Artist.Add(list3);
-                context.Artist.Add(list4);
-                context.Artist.Add(list5);
-                context.Artist.Add(list6);
-                context.Artist.Add(list7);
-                context.Artist.Add(list8);
-                context.Artist.Add(list9);
-                context.Artist.Add(list10);
+                context.Artists.Add(list1);
+                context.Artists.Add(list2);
+                context.Artists.Add(list3);
+                context.Artists.Add(list4);
+                context.Artists.Add(list5);
+                context.Artists.Add(list6);
+                context.Artists.Add(list7);
+                context.Artists.Add(list8);
+                context.Artists.Add(list9);
+                context.Artists.Add(list10);
             }
 
             if (!context.ShowSchedule.Any())

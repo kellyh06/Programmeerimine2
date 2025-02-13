@@ -21,6 +21,7 @@ namespace KooliProjekt.Data.Repositories
             var query = DbContext.MusicTracks.AsQueryable();
 
             if (search != null)
+
             {
                 if (!string.IsNullOrEmpty(search.Titel))
                 {
@@ -30,13 +31,13 @@ namespace KooliProjekt.Data.Repositories
                 {
                     query = query.Where(musicTrack => musicTrack.Artist == search.Artist);
                 }
-                if (search.Year != null)
+                if (!string.IsNullOrEmpty(search.Year))
                 {
-                    query = query.Where(musicTrack => musicTrack.Year == search.Year);
+                    query = query.Where(musicTrack => musicTrack.Year.ToString() == search.Year);
                 }
-                if (search.Pace != null)
+                if (!string.IsNullOrEmpty(search.Pace))
                 {
-                    query = query.Where(musicTrack => musicTrack.Pace == search.Pace);
+                    query = query.Where(musicTrack => musicTrack.Pace.ToString() == search.Pace);
                 }
             }
 
