@@ -10,11 +10,11 @@ using KooliProjekt.Services;
 
 namespace KooliProjekt.Controllers
 {
-    public class MusicTracks : Controller
+    public class MusicTracksController : Controller
     {
         private readonly IMusicTrackService _service;
 
-        public MusicTracks(IMusicTrackService service)
+        public MusicTracksController(IMusicTrackService service)
         {
             _service = service;
         }
@@ -114,12 +114,13 @@ namespace KooliProjekt.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var musicTrack = await _service.Get(id);
-            if (musicTrack != null)
+            if (musicTrack == null)
             {
-                await _service.Delete(musicTrack.Id);
+                return NotFound(); // <-- Lisa see, et test mööduks
             }
 
+            await _service.Delete(musicTrack.Id);
             return RedirectToAction(nameof(Index));
         }
+     }
     }
-}

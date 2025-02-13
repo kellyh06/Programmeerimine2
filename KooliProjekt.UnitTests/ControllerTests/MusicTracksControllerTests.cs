@@ -9,15 +9,15 @@ using KooliProjekt.Data;
 
 namespace KooliProjekt.Tests.Controllers
 {
-    public class ArtistsControllerTests
+    public class MusicTracksControllerTests
     {
-        private readonly ArtistsController _controller;
-        private readonly Mock<IArtistService> _mockArtistService;
+        private readonly MusicTracksController _controller;
+        private readonly Mock<IMusicTrackService> _mockMusicTrackService;
 
-        public ArtistsControllerTests()
+        public MusicTracksControllerTests()
         {
-            _mockArtistService = new Mock<IArtistService>();
-            _controller = new ArtistsController(_mockArtistService.Object);
+            _mockMusicTrackService = new Mock<IMusicTrackService>();
+            _controller = new MusicTracksController(_mockMusicTrackService.Object);
         }
 
         // Test Create (GET) action
@@ -42,12 +42,12 @@ namespace KooliProjekt.Tests.Controllers
             Assert.IsType<NotFoundResult>(result);
         }
 
-        // Test Details (GET) action (when artist not found)
+        // Test Details (GET) action (when music track not found)
         [Fact]
-        public async Task Details_ReturnsNotFoundResult_WhenArtistNotFound()
+        public async Task Details_ReturnsNotFoundResult_WhenMusicTrackNotFound()
         {
             // Arrange
-            _mockArtistService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync((Artist)null);
+            _mockMusicTrackService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync((MusicTrack)null);
 
             // Act
             var result = await _controller.Details(1);
@@ -56,21 +56,21 @@ namespace KooliProjekt.Tests.Controllers
             Assert.IsType<NotFoundResult>(result);
         }
 
-        // Test Details (GET) action (when artist found)
+        // Test Details (GET) action (when music track found)
         [Fact]
-        public async Task Details_ReturnsViewResult_WithArtist()
+        public async Task Details_ReturnsViewResult_WithMusicTrack()
         {
             // Arrange
-            var artist = new Artist { Id = 1, Name = "Test Artist" };
-            _mockArtistService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync(artist);
+            var musicTrack = new MusicTrack { Id = 1, Title = "Test Title", Artist = "Test Artist", Year = 2022, Pace =  3};
+            _mockMusicTrackService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync(musicTrack);
 
             // Act
             var result = await _controller.Details(1);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<Artist>(viewResult.Model);
-            Assert.Equal(artist.Id, model.Id);
+            var model = Assert.IsAssignableFrom<MusicTrack>(viewResult.Model);
+            Assert.Equal(musicTrack.Id, model.Id);
         }
 
         // Test Edit (GET) action (when id is null)
@@ -84,12 +84,12 @@ namespace KooliProjekt.Tests.Controllers
             Assert.IsType<NotFoundResult>(result);
         }
 
-        // Test Edit (GET) action (when artist not found)
+        // Test Edit (GET) action (when music track not found)
         [Fact]
-        public async Task Edit_ReturnsNotFoundResult_WhenArtistNotFound()
+        public async Task Edit_ReturnsNotFoundResult_WhenMusicTrackNotFound()
         {
             // Arrange
-            _mockArtistService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync((Artist)null);
+            _mockMusicTrackService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync((MusicTrack)null);
 
             // Act
             var result = await _controller.Edit(1);
@@ -98,21 +98,21 @@ namespace KooliProjekt.Tests.Controllers
             Assert.IsType<NotFoundResult>(result);
         }
 
-        // Test Edit (GET) action (when artist found)
+        // Test Edit (GET) action (when music track found)
         [Fact]
-        public async Task Edit_ReturnsViewResult_WithArtist()
+        public async Task Edit_ReturnsViewResult_WithMusicTrack()
         {
             // Arrange
-            var artist = new Artist { Id = 1, Name = "Test Artist" };
-            _mockArtistService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync(artist);
+            var musicTrack = new MusicTrack { Id = 1, Title = "Test Title", Artist = "Test Artist", Year = 2022, Pace = 2 };
+            _mockMusicTrackService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync(musicTrack);
 
             // Act
             var result = await _controller.Edit(1);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<Artist>(viewResult.Model);
-            Assert.Equal(artist.Id, model.Id);
+            var model = Assert.IsAssignableFrom<MusicTrack>(viewResult.Model);
+            Assert.Equal(musicTrack.Id, model.Id);
         }
 
         // Test Delete (GET) action (when id is null)
@@ -126,12 +126,12 @@ namespace KooliProjekt.Tests.Controllers
             Assert.IsType<NotFoundResult>(result);
         }
 
-        // Test Delete (GET) action (when artist not found)
+        // Test Delete (GET) action (when music track not found)
         [Fact]
-        public async Task Delete_ReturnsNotFoundResult_WhenArtistNotFound()
+        public async Task Delete_ReturnsNotFoundResult_WhenMusicTrackNotFound()
         {
             // Arrange
-            _mockArtistService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync((Artist)null);
+            _mockMusicTrackService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync((MusicTrack)null);
 
             // Act
             var result = await _controller.Delete(1);
@@ -140,21 +140,21 @@ namespace KooliProjekt.Tests.Controllers
             Assert.IsType<NotFoundResult>(result);
         }
 
-        // Test Delete (GET) action (when artist found)
+        // Test Delete (GET) action (when music track found)
         [Fact]
-        public async Task Delete_ReturnsViewResult_WithArtist()
+        public async Task Delete_ReturnsViewResult_WithMusicTrack()
         {
             // Arrange
-            var artist = new Artist { Id = 1, Name = "Test Artist" };
-            _mockArtistService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync(artist);
+            var musicTrack = new MusicTrack { Id = 1, Title = "Test Title", Artist = "Test Artist", Year = 2022, Pace = 3 };
+            _mockMusicTrackService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync(musicTrack);
 
             // Act
             var result = await _controller.Delete(1);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<Artist>(viewResult.Model);
-            Assert.Equal(artist.Id, model.Id);
+            var model = Assert.IsAssignableFrom<MusicTrack>(viewResult.Model);
+            Assert.Equal(musicTrack.Id, model.Id);
         }
 
         // Test Create (POST) action
@@ -162,11 +162,11 @@ namespace KooliProjekt.Tests.Controllers
         public async Task Create_Post_ReturnsRedirectToAction_WhenModelIsValid()
         {
             // Arrange
-            var artist = new Artist { Id = 1, Name = "Test Artist" };
-            _mockArtistService.Setup(service => service.Save(It.IsAny<Artist>())).Returns(Task.CompletedTask);
+            var musicTrack = new MusicTrack { Id = 1, Title = "Test Title", Artist = "Test Artist", Year = 2022, Pace = 4 };
+            _mockMusicTrackService.Setup(service => service.Save(It.IsAny<MusicTrack>())).Returns(Task.CompletedTask);
 
             // Act
-            var result = await _controller.Create(artist);
+            var result = await _controller.Create(musicTrack);
 
             // Assert
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
@@ -177,11 +177,11 @@ namespace KooliProjekt.Tests.Controllers
         public async Task Create_Post_ReturnsViewResult_WhenModelIsInvalid()
         {
             // Arrange
-            _controller.ModelState.AddModelError("Name", "Required");
-            var artist = new Artist();
+            _controller.ModelState.AddModelError("Title", "Required");
+            var musicTrack = new MusicTrack();
 
             // Act
-            var result = await _controller.Create(artist);
+            var result = await _controller.Create(musicTrack);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -189,12 +189,12 @@ namespace KooliProjekt.Tests.Controllers
 
         // Test Delete (POST) action
         [Fact]
-        public async Task DeleteConfirmed_Post_ReturnsRedirectToAction_WhenArtistIsDeleted()
+        public async Task DeleteConfirmed_Post_ReturnsRedirectToAction_WhenMusicTrackIsDeleted()
         {
             // Arrange
-            var artist = new Artist { Id = 1, Name = "Test Artist" };
-            _mockArtistService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync(artist);
-            _mockArtistService.Setup(service => service.Delete(It.IsAny<int>())).Returns(Task.CompletedTask);
+            var musicTrack = new MusicTrack { Id = 1, Title = "Test Title", Artist = "Test Artist", Year = 2022, Pace = 3 };
+            _mockMusicTrackService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync(musicTrack);
+            _mockMusicTrackService.Setup(service => service.Delete(It.IsAny<int>())).Returns(Task.CompletedTask);
 
             // Act
             var result = await _controller.DeleteConfirmed(1);
@@ -205,10 +205,10 @@ namespace KooliProjekt.Tests.Controllers
         }
 
         [Fact]
-        public async Task DeleteConfirmed_Post_ReturnsNotFound_WhenArtistIsNotFound()
+        public async Task DeleteConfirmed_Post_ReturnsNotFound_WhenMusicTrackIsNotFound()
         {
             // Arrange
-            _mockArtistService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync((Artist)null);
+            _mockMusicTrackService.Setup(service => service.Get(It.IsAny<int>())).ReturnsAsync((MusicTrack)null);
 
             // Act
             var result = await _controller.DeleteConfirmed(1);
