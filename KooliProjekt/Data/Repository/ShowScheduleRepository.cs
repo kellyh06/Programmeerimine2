@@ -12,7 +12,7 @@ namespace KooliProjekt.Data.Repositories
         }
         public override async Task<ShowSchedule> Get(int id)
         {
-            return await DbContext.ShowSchedule.FindAsync(id);
+            return await DbContext.Set<ShowSchedule>().FindAsync(id);
         }
 
         public virtual async Task<PagedResult<ShowSchedule>> List(int page, int pageSize, ShowScheduleSearch search = null)
@@ -25,11 +25,32 @@ namespace KooliProjekt.Data.Repositories
                 {
                     var lower = search.Date.Value.Date;
                     var upper = search.Date.Value.Date.AddDays(1);
-                    query = query.Where(showSchedule => showSchedule.date >= lower && showSchedule.date < upper);
+                    query = query.Where(showSchedule => showSchedule.date == search.Date);
                 }
             }
 
             return await query.GetPagedAsync(page, 5);
+        }
+
+        public virtual async Task Save(ShowSchedule item)
+        {
+            if (item.Id == 0)
+            {
+                DbContext.Set<ShowSchedule>().Add(item);
+            }
+            else
+            {
+                DbContext.Set<ShowSchedule>().Update(item);
+            }
+
+            await DbContext.SaveChangesAsync();
+        }
+
+        public virtual async Task Delete(int id)
+        {
+            await DbContext.Set<ShowSchedule>()
+                .Where(item => item.Id == id)
+                .ExecuteDeleteAsync();
         }
     }
 }

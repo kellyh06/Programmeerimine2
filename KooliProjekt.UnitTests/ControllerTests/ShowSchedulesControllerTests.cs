@@ -1,147 +1,135 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 using KooliProjekt.Controllers;
-using KooliProjekt.Services;
 using KooliProjekt.Models;
+using KooliProjekt.Services;
 using KooliProjekt.Data;
+using KooliProjekt.Search;
 
-namespace KooliProjekt.Tests.Controllers
+public class ShowSchedulesControllerTests
 {
-    public class ShowSchedulesControllerTests
+    private readonly Mock<IShowScheduleService> _mockService;
+    private readonly ShowSchedulesController _controller;
+
+    public ShowSchedulesControllerTests()
     {
-        private readonly Mock<IShowScheduleService> _mockService;
-        private readonly ShowSchedulesController _controller;
+        _mockService = new Mock<IShowScheduleService>();
+        _controller = new ShowSchedulesController(_mockService.Object);
+    }
 
-        public ShowSchedulesControllerTests()
-        {
-            _mockService = new Mock<IShowScheduleService>();
-            _controller = new ShowSchedulesController(_mockService.Object);
-        }
+    [Fact]
+    public async Task Index_ReturnsView_WithModel()
+    {
+        // Arrange
+        var model = new ShowSchedulesIndexModel();
+        _mockService.Setup(s => s.List(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<ShowScheduleSearch>()))
+            .ReturnsAsync(model.Data);
 
-        [Fact]
-        public async Task Details_ReturnsNotFound_WhenIdIsNull()
-        {
-            // Act
-            var result = await _controller.Details(null);
+        // Act
+        var result = await _controller.Index();
 
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
+        // Assert
+        var viewResult = Assert.IsType<ViewResult>(result);
+        Assert.IsType<ShowSchedulesIndexModel>(viewResult.Model);
+    }
 
-        [Fact]
-        public async Task Details_ReturnsNotFound_WhenShowScheduleNotFound()
-        {
-            // Arrange
-            _mockService.Setup(s => s.Get(It.IsAny<int>())).ReturnsAsync((ShowSchedule)null);
+    [Fact]
+    public async Task Details_ReturnsNotFound_WhenIdIsNull()
+    {
+        var result = await _controller.Details(null);
+        Assert.IsType<NotFoundResult>(result);
+    }
 
-            // Act
-            var result = await _controller.Details(1);
+    [Fact]
+    public async Task Details_ReturnsNotFound_WhenShowScheduleNotFound()
+    {
+        _mockService.Setup(s => s.Get(It.IsAny<int>())).ReturnsAsync((ShowSchedule)null);
+        var result = await _controller.Details(1);
+        Assert.IsType<NotFoundResult>(result);
+    }
 
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
+    [Fact]
+    public async Task Details_ReturnsView_WithShowSchedule()
+    {
+        var schedule = new ShowSchedule { Id = 1, Date = DateTime.Now };
+        _mockService.Setup(s => s.Get(1)).ReturnsAsync(schedule);
 
-        [Fact]
-        public async Task Details_ReturnsView_WithShowSchedule()
-        {
-            // Arrange
-            var schedule = new ShowSchedule { Id = 1, Date = "2025-02-15" };
-            _mockService.Setup(s => s.Get(1)).ReturnsAsync(schedule);
+        var result = await _controller.Details(1);
 
-            // Act
-            var result = await _controller.Details(1);
+        var viewResult = Assert.IsType<ViewResult>(result);
+        Assert.Equal(schedule, viewResult.Model);
+    }
 
-            // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal(schedule, viewResult.Model);
-        }
+    [Fact]
+    public void Create_ReturnsView()
+    {
+        var result = _controller.Create();
+        Assert.IsType<ViewResult>(result);
+    }
 
-        [Fact]
-        public void Create_ReturnsView()
-        {
-            // Act
-            var result = _controller.Create();
+    [Fact]
+    public async Task Create_Post_RedirectsToIndex_WhenModelIsValid()
+    {
+        var schedule = new ShowSchedule { Id = 1, Date = DateTime.Now };
+        _mockService.Setup(s => s.Save(schedule)).Returns(Task.CompletedTask);
 
-            // Assert
-            Assert.IsType<ViewResult>(result);
-        }
+        var result = await _controller.Create(schedule);
 
-        [Fact]
-        public async Task Edit_ReturnsNotFound_WhenIdIsNull()
-        {
-            // Act
-            var result = await _controller.Edit(null);
+        var redirect = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirect.ActionName);
+    }
 
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
+    [Fact]
+    public async Task Edit_ReturnsNotFound_WhenIdIsNull()
+    {
+        var result = await _controller.Edit(null);
+        Assert.IsType<NotFoundResult>(result);
+    }
 
-        [Fact]
-        public async Task Edit_ReturnsNotFound_WhenShowScheduleNotFound()
-        {
-            // Arrange
-            _mockService.Setup(s => s.Get(It.IsAny<int>())).ReturnsAsync((ShowSchedule)null);
+    [Fact]
+    public async Task Edit_ReturnsView_WithShowSchedule()
+    {
+        var schedule = new ShowSchedule { Id = 1, Date = DateTime.Now };
+        _mockService.Setup(s => s.Get(1)).ReturnsAsync(schedule);
 
-            // Act
-            var result = await _controller.Edit(1);
+        var result = await _controller.Edit(1);
 
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
+        var viewResult = Assert.IsType<ViewResult>(result);
+        Assert.Equal(schedule, viewResult.Model);
+    }
 
-        [Fact]
-        public async Task Edit_ReturnsView_WithShowSchedule()
-        {
-            // Arrange
-            var schedule = new ShowSchedule { Id = 1, Date = "2025-02-15" };
-            _mockService.Setup(s => s.Get(1)).ReturnsAsync(schedule);
+    [Fact]
+    public async Task Delete_ReturnsNotFound_WhenIdIsNull()
+    {
+        var result = await _controller.Delete(null);
+        Assert.IsType<NotFoundResult>(result);
+    }
 
-            // Act
-            var result = await _controller.Edit(1);
+    [Fact]
+    public async Task Delete_ReturnsView_WithShowSchedule()
+    {
+        var schedule = new ShowSchedule { Id = 1, Date = DateTime.Now };
+        _mockService.Setup(s => s.Get(1)).ReturnsAsync(schedule);
 
-            // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal(schedule, viewResult.Model);
-        }
+        var result = await _controller.Delete(1);
 
-        [Fact]
-        public async Task Delete_ReturnsNotFound_WhenIdIsNull()
-        {
-            // Act
-            var result = await _controller.Delete(null);
+        var viewResult = Assert.IsType<ViewResult>(result);
+        Assert.Equal(schedule, viewResult.Model);
+    }
 
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
+    [Fact]
+    public async Task DeleteConfirmed_RedirectsToIndex_WhenShowScheduleExists()
+    {
+        var schedule = new ShowSchedule { Id = 1, Date = DateTime.Now };
+        _mockService.Setup(s => s.Get(1)).ReturnsAsync(schedule);
+        _mockService.Setup(s => s.Delete(1)).Returns(Task.CompletedTask);
 
-        [Fact]
-        public async Task Delete_ReturnsNotFound_WhenShowScheduleNotFound()
-        {
-            // Arrange
-            _mockService.Setup(s => s.Get(It.IsAny<int>())).ReturnsAsync((ShowSchedule)null);
+        var result = await _controller.DeleteConfirmed(1);
 
-            // Act
-            var result = await _controller.Delete(1);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
-        public async Task Delete_ReturnsView_WithShowSchedule()
-        {
-            // Arrange
-            var schedule = new ShowSchedule { Id = 1, Date = "2025-02-15" };
-            _mockService.Setup(s => s.Get(1)).ReturnsAsync(schedule);
-
-            // Act
-            var result = await _controller.Delete(1);
-
-            // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal(schedule, viewResult.Model);
-        }
+        var redirect = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirect.ActionName);
     }
 }

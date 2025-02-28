@@ -7,6 +7,6 @@ namespace KooliProjekt.Data
 
         [Required]
         public DateTime date { get; set; }
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
     }
 }

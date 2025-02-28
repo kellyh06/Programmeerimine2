@@ -12,7 +12,7 @@ namespace KooliProjekt.Data.Repositories
 
         public override async Task<Artist> Get(int id)
         {
-            return await DbContext.Artists.FindAsync(id);
+            return await DbContext.Set<Artist>().FindAsync(id);
         }
 
         public virtual async Task<PagedResult<Artist>> List(int page, int pageSize, ArtistSearch search = null)
