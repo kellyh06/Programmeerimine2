@@ -1,6 +1,7 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
 
 namespace KooliProjekt.Services
 {
@@ -15,9 +16,14 @@ namespace KooliProjekt.Services
 
         public async Task Delete(int id)
         {
-            await _context.Artists
-                .Where(list => list.Id == id)
-                .ExecuteDeleteAsync();
+            var artist = await _context.Artists.FindAsync(id);
+            if (artist == null)
+            {
+                return;
+            }
+           
+            _context.Artists.Remove(artist);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Artist> Get(int id)

@@ -151,7 +151,7 @@ namespace KooliProjekt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MusicTrackExists(int id)
+        public bool MusicTrackExists(int id)
         {
             return _context.MusicTracks.Any(e => e.Id == id);
         }
