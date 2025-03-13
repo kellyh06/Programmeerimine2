@@ -22,10 +22,10 @@ namespace KooliProjekt.Tests
         private ApplicationDbContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Unique DB for each test
                 .Options;
             return new ApplicationDbContext(options);
-        }
+        } // ❗ SULEB meetodi õigesti
 
         [Fact]
         public async Task Index_ReturnsViewResult_WithMusicTracks()
@@ -33,13 +33,13 @@ namespace KooliProjekt.Tests
             var context = GetInMemoryDbContext();
             context.MusicTracks.Add(new MusicTrack { Title = "Test Track", Artist = "Test Artist", Year = 2025, Pace = 5 });
             context.SaveChanges();
-            var controller = GetController(context, null);
 
+            var controller = GetController(context, null);
             var result = await controller.Index();
 
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<IEnumerable<MusicTrack>>(viewResult.Model);
-            Assert.Single(model);
+            var model = Assert.IsAssignableFrom<PagedResult<MusicTrack>>(viewResult.Model); // Muuda siin
+            Assert.Single(model.Results); // Kasuta Results omadust
         }
 
         [Fact]
@@ -124,12 +124,12 @@ namespace KooliProjekt.Tests
         public async Task Delete_ReturnsViewResult_WithMusicTrack()
         {
             var context = GetInMemoryDbContext();
-            var musicTrack = new MusicTrack { Id = 1, Title = "Test Track", Artist = "Test Artist", Year = 2025, Pace = 4 };
+            var musicTrack = new MusicTrack { Title = "Test Track", Artist = "Test Artist", Year = 2025, Pace = 4 };
             context.MusicTracks.Add(musicTrack);
             context.SaveChanges();
             var controller = GetController(context, null);
 
-            var result = await controller.Delete(1);
+            var result = await controller.Delete(musicTrack.Id);
 
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<MusicTrack>(viewResult.Model);

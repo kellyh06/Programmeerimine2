@@ -13,13 +13,11 @@ namespace KooliProjekt.Controllers
 {
     public class ShowSchedulesController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IShowScheduleService _showScheduleService;
 
-        public ShowSchedulesController(IShowScheduleService showScheduleService, ApplicationDbContext context)
+        public ShowSchedulesController(IShowScheduleService showScheduleService)
         {
             _showScheduleService = showScheduleService;
-            _context = context;
         }
 
         // GET: ShowSchedules
@@ -34,17 +32,13 @@ namespace KooliProjekt.Controllers
         // GET: ShowSchedules/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var showSchedule = await _context.ShowSchedule
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (showSchedule == null)
-            {
-                return NotFound();
-            }
+
+            var showSchedule = await _showScheduleService.Get(id.Value);
+
+            if (showSchedule == null) return NotFound();
+
 
             return View(showSchedule);
         }
@@ -62,10 +56,10 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,date")] ShowSchedule showSchedule)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+
             {
-                _context.Add(showSchedule);
-                await _context.SaveChangesAsync();
+                await _showScheduleService.Get(showSchedule);
                 return RedirectToAction(nameof(Index));
             }
             return View(showSchedule);
@@ -79,7 +73,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var showSchedule = await _context.ShowSchedule.FindAsync(id);
+            var showSchedule = await _showScheduleService.Get(id.Value);
             if (showSchedule == null)
             {
                 return NotFound();
@@ -92,34 +86,19 @@ namespace KooliProjekt.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,date")] ShowSchedule showSchedule)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Date")] ShowSchedule showSchedule)
         {
             if (id != showSchedule.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(showSchedule);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ShowScheduleExists(showSchedule.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(showSchedule);
+            if (!ModelState.IsValid) return View(showSchedule);
+
+            var result = await _showScheduleService.List(showSchedule);
+            if (!result) return NotFound();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ShowSchedules/Delete/5
@@ -130,34 +109,31 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var showSchedule = await _context.ShowSchedule
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (showSchedule == null)
-            {
-                return NotFound();
-            }
+            var showSchedule = await _showScheduleService.Get(id.Value);
+            if (showSchedule == null) return NotFound();
 
             return View(showSchedule);
         }
+
 
         // POST: ShowSchedules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var showSchedule = await _context.ShowSchedule.FindAsync(id);
+            var showSchedule = await _showScheduleService.Get(id);
             if (showSchedule != null)
             {
-                _context.ShowSchedule.Remove(showSchedule);
+                _showScheduleService.ShowSchedule.Delete(showSchedule);
             }
 
-            await _context.SaveChangesAsync();
+            await _showScheduleService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ShowScheduleExists(int id)
         {
-            return _context.ShowSchedule.Any(e => e.Id == id);
+            return _showScheduleService.ShowSchedule.Any(e => e.Id == id);
         }
     }
 }
