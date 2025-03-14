@@ -24,8 +24,10 @@ namespace KooliProjekt.Controllers
         public async Task<IActionResult> Index(int page = 1, ShowSchedulesIndexModel model = null)
         {
             model = model ?? new ShowSchedulesIndexModel();
-            model.Data = await _showScheduleService.List(page, 10, model.Search);
-
+            model.Data = await _showScheduleService.List(page, 10, model.Search) ?? new PagedResult<ShowSchedule>
+            {
+                Results = new List<ShowSchedule>()
+            };
             return View(model);
         }
 
@@ -53,13 +55,13 @@ namespace KooliProjekt.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,date")] ShowSchedule showSchedule)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ShowSchedule showSchedule)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
 
             {
-                await _showScheduleService.Get(showSchedule);
+                await _showScheduleService.Save(showSchedule);
                 return RedirectToAction(nameof(Index));
             }
             return View(showSchedule);
@@ -85,8 +87,8 @@ namespace KooliProjekt.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date")] ShowSchedule showSchedule)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, ShowSchedule showSchedule)
         {
             if (id != showSchedule.Id)
             {
@@ -95,8 +97,7 @@ namespace KooliProjekt.Controllers
 
             if (!ModelState.IsValid) return View(showSchedule);
 
-            var result = await _showScheduleService.List(showSchedule);
-            if (!result) return NotFound();
+            await _showScheduleService.Save(showSchedule);
 
             return RedirectToAction(nameof(Index));
         }
@@ -124,16 +125,15 @@ namespace KooliProjekt.Controllers
             var showSchedule = await _showScheduleService.Get(id);
             if (showSchedule != null)
             {
-                _showScheduleService.ShowSchedule.Delete(showSchedule);
+                await _showScheduleService.Delete(id);
             }
 
-            await _showScheduleService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ShowScheduleExists(int id)
-        {
-            return _showScheduleService.ShowSchedule.Any(e => e.Id == id);
-        }
+        //private bool ShowScheduleExists(int id)
+        //{
+        //    return _showScheduleService.ShowSchedule.Any(e => e.Id == id);
+        //}
     }
 }

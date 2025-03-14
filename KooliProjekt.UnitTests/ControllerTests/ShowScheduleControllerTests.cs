@@ -20,7 +20,7 @@ namespace KooliProjekt.Tests.Controllers
         public ShowSchedulesControllerTests()
         {
             _serviceMock = new Mock<IShowScheduleService>();
-            _controller = new ShowSchedulesController(_serviceMock.Object, null);
+            _controller = new ShowSchedulesController(_serviceMock.Object);
         }
 
         // Test 'Create' meetod edukas
@@ -29,10 +29,12 @@ namespace KooliProjekt.Tests.Controllers
         {
             var showSchedule = new ShowSchedule { Id = 1, date = DateTime.Now };
 
-            _serviceMock.Setup(service => service.AddShowScheduleAsync(showSchedule))
+            _serviceMock.Setup(service => service.Save(It.IsAny<ShowSchedule>()))
                 .Returns(Task.CompletedTask); // Simuleeri, et andmed lisatakse
 
-            var result = await _controller.Create(showSchedule);
+            _controller.ModelState.Clear();
+
+            var result = await _controller.Create(showSchedule); // Oota ära meetodi käitumine
 
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirectToActionResult.ActionName);
@@ -65,7 +67,7 @@ namespace KooliProjekt.Tests.Controllers
         {
             var showSchedule = new ShowSchedule { Id = 1, date = DateTime.Now };
 
-            _serviceMock.Setup(service => service.UpdateShowScheduleAsync(1, showSchedule))
+            _serviceMock.Setup(service => service.Save(showSchedule))
                 .Returns(Task.CompletedTask); // Simuleeri, et andmed uuendatakse
 
             var result = await _controller.Edit(1, showSchedule);
@@ -80,7 +82,7 @@ namespace KooliProjekt.Tests.Controllers
         {
             var showSchedule = new ShowSchedule { Id = 1, date = DateTime.Now };
 
-            _serviceMock.Setup(service => service.UpdateShowScheduleAsync(1, It.IsAny<ShowSchedule>()))
+            _serviceMock.Setup(service => service.Save(It.IsAny<ShowSchedule>()))
                 .Throws(new DbUpdateConcurrencyException()); // Simuleeri konkurentsi viga
 
             var result = await _controller.Edit(1, showSchedule);
@@ -105,7 +107,7 @@ namespace KooliProjekt.Tests.Controllers
         {
             var showSchedule = new ShowSchedule { Id = 1, date = DateTime.Now };
 
-            _serviceMock.Setup(service => service.DeleteShowScheduleAsync(1))
+            _serviceMock.Setup(service => service.Delete(1))
                 .Returns(Task.CompletedTask); // Simuleeri, et objekt on eemaldatud
 
             var result = await _controller.DeleteConfirmed(1);
@@ -127,7 +129,7 @@ namespace KooliProjekt.Tests.Controllers
         [Fact]
         public async Task Details_ReturnsNotFound_WhenShowScheduleIsNull()
         {
-            _serviceMock.Setup(service => service.GetShowScheduleByIdAsync(1))
+            _serviceMock.Setup(service => service.Get(1))
                 .ReturnsAsync((ShowSchedule)null); // Simuleeri, et andmed puuduvad
 
             var result = await _controller.Details(1);
@@ -139,13 +141,24 @@ namespace KooliProjekt.Tests.Controllers
         [Fact]
         public async Task Index_ReturnsViewResult_WithData()
         {
-            _serviceMock.Setup(service => service.GetAllShowSchedulesAsync())
-                .ReturnsAsync(new[] { new ShowSchedule() }); // Simuleeri, et andmed on olemas
+            var pagedResult = new PagedResult<ShowSchedule>
+            {
+                Results = new List<ShowSchedule>
+                {
+                    new ShowSchedule()
+                }
+            };
+            _serviceMock.Setup(service => service.List(It.IsAny<int>(), It.IsAny<int>(), null))
+                .ReturnsAsync(pagedResult); // Simuleeri, et andmed on olemas
 
             var result = await _controller.Index();
 
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.NotNull(viewResult.Model); // Ootame, et mudel oleks olemas
+
+            var model = Assert.IsType<ShowSchedulesIndexModel>(viewResult.Model);
+            Assert.NotNull(model.Data); // Kontrolli, et Data pole null
+            Assert.NotEmpty(model.Data.Results);
         }
     }
 }
