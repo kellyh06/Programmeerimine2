@@ -3,7 +3,7 @@ using KooliProjekt.Search;
 
 namespace KooliProjekt.Models
 {
-    public class MusicTrakcsIndexModel
+    public class MusicTracksIndexModel
     {
         public MusicTrackSearch Search { get; set; }
         public PagedResult<MusicTrack> Data { get; set; }

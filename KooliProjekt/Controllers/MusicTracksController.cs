@@ -1,46 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KooliProjekt.Data;
+﻿using KooliProjekt.Data;
+using KooliProjekt.Models;
 using KooliProjekt.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
     public class MusicTracksController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IMusicTrackService _musicTrackService;
+        private readonly ILogger<MusicTracksController> _logger;
 
-        public MusicTracksController(ApplicationDbContext context, IMusicTrackService musicTrackService)
+        public MusicTracksController(IMusicTrackService musicTrackService, ILogger<MusicTracksController> logger)
         {
-            _context = context;
             _musicTrackService = musicTrackService;
+            _logger = logger;
         }
 
         // GET: MusicTracks
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, MusicTracksIndexModel model = null)
         {
-            return View(await _context.MusicTracks.GetPagedAsync(page, 10));
+            model ??= new MusicTracksIndexModel();
+
+            try
+            {
+                model.Data = await _musicTrackService.List(page, 10, model.Search) ?? new PagedResult<MusicTrack>
+                {
+                    Results = new List<MusicTrack>()
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Viga muusikapalade loendi laadimisel.");
+                ModelState.AddModelError("", "Tekkis viga muusikapalade laadimisel.");
+                model.Data = new PagedResult<MusicTrack> { Results = new List<MusicTrack>() };
+            }
+
+            return View(model);
         }
 
         // GET: MusicTracks/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var musicTrack = await _context.MusicTracks
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (musicTrack == null)
-            {
-                return NotFound();
-            }
+            var musicTrack = await _musicTrackService.Get(id.Value);
+            if (musicTrack == null) return NotFound();
 
             return View(musicTrack);
         }
@@ -52,108 +60,80 @@ namespace KooliProjekt.Controllers
         }
 
         // POST: MusicTracks/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Artist,Year,Pace")] MusicTrack musicTrack)
+        public async Task<IActionResult> Create(MusicTrack musicTrack)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(musicTrack);
+
+            try
             {
-                _context.Add(musicTrack);
-                await _context.SaveChangesAsync();
+                await _musicTrackService.Save(musicTrack);
+                _logger.LogInformation("Lisati uus muusikapala: {Title}", musicTrack.Title);
                 return RedirectToAction(nameof(Index));
             }
-            return View(musicTrack);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Muusikapala loomine ebaõnnestus.");
+                ModelState.AddModelError("", "Muusikapala lisamine ebaõnnestus.");
+                return View(musicTrack);
+            }
         }
 
         // GET: MusicTracks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var musicTrack = await _context.MusicTracks.FindAsync(id);
-            if (musicTrack == null)
-            {
-                return NotFound();
-            }
+            var musicTrack = await _musicTrackService.Get(id.Value);
+            if (musicTrack == null) return NotFound();
+
             return View(musicTrack);
         }
 
         // POST: MusicTracks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Artist,Year,Pace")] MusicTrack musicTrack)
+        public async Task<IActionResult> Edit(int id, MusicTrack musicTrack)
         {
-            if (id != musicTrack.Id)
-            {
-                return NotFound();
-            }
+            if (id != musicTrack.Id) return NotFound();
+            if (!ModelState.IsValid) return View(musicTrack);
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(musicTrack);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MusicTrackExists(musicTrack.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _musicTrackService.Save(musicTrack);
+                _logger.LogInformation("Muusikapala muudetud: {Title}", musicTrack.Title);
                 return RedirectToAction(nameof(Index));
             }
-            return View(musicTrack);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Muusikapala muutmine ebaõnnestus.");
+                ModelState.AddModelError("", "Muusikapala muutmine ebaõnnestus.");
+                return View(musicTrack);
+            }
         }
 
         // GET: MusicTracks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var musicTrack = await _context.MusicTracks
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (musicTrack == null)
-            {
-                return NotFound();
-            }
+            var musicTrack = await _musicTrackService.Get(id.Value);
+            if (musicTrack == null) return NotFound();
 
             return View(musicTrack);
         }
 
         // POST: MusicTracks/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var musicTrack = await _context.MusicTracks.FindAsync(id);
+            var musicTrack = await _musicTrackService.Get(id);
             if (musicTrack != null)
             {
-                _context.MusicTracks.Remove(musicTrack);
+                await _musicTrackService.Delete(id);
+                _logger.LogInformation("Muusikapala kustutatud: {Title}", musicTrack.Title);
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        public bool MusicTrackExists(int id)
-        {
-            return _context.MusicTracks.Any(e => e.Id == id);
         }
     }
 }

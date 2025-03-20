@@ -97,9 +97,17 @@ namespace KooliProjekt.Controllers
 
             if (!ModelState.IsValid) return View(showSchedule);
 
-            await _showScheduleService.Save(showSchedule);
+            try
+            {
+                await _showScheduleService.Save(showSchedule);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                ModelState.AddModelError("", "Concurrency error: The record has been modified by another user.");
+                return RedirectToAction(nameof(Edit), new { id = showSchedule.Id });
+            }
         }
 
         // GET: ShowSchedules/Delete/5
@@ -119,7 +127,7 @@ namespace KooliProjekt.Controllers
 
         // POST: ShowSchedules/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var showSchedule = await _showScheduleService.Get(id);
@@ -130,10 +138,5 @@ namespace KooliProjekt.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        //private bool ShowScheduleExists(int id)
-        //{
-        //    return _showScheduleService.ShowSchedule.Any(e => e.Id == id);
-        //}
     }
 }
