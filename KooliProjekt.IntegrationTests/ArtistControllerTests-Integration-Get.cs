@@ -13,19 +13,19 @@ using Xunit;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class ArtistControllerTests : TestBase
+    public class ArtistControllerTests_Integration_Get : TestBase
     {
-        private readonly Artist _artist;
+        private readonly HttpClient _client;
         private readonly ApplicationDbContext _dbContext;
 
-        public ArtistControllerTests()
+        public ArtistControllerTests_Integration_Get()
         {
             var options = new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = false
             };
 
-            _artist = Artist.CreateClient(options);
+            _client = Factory.CreateClient(options);
             _dbContext = Factory.Services.GetRequiredService<ApplicationDbContext>();
         }
 
@@ -43,7 +43,7 @@ namespace KooliProjekt.IntegrationTests
         [Fact]
         public async Task Index_should_return_success()
         {
-            using var response = await _artist.GetAsync("/Artists");
+            using var response = await _client.GetAsync("/Artists");
             response.EnsureSuccessStatusCode();
         }
 
@@ -56,14 +56,14 @@ namespace KooliProjekt.IntegrationTests
         [InlineData("/Artists/Edit/100")]   
         public async Task Should_return_notfound(string url)
         {
-            using var response = await _artist.GetAsync(url);
+            using var response = await _client.GetAsync(url);
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
         public async Task Details_should_return_notfound_when_artist_was_not_found()
         {
-            using var response = await _artist.GetAsync("/Artists/Details/100");
+            using var response = await _client.GetAsync("/Artists/Details/100");
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
@@ -76,7 +76,7 @@ namespace KooliProjekt.IntegrationTests
             dbContext.Artists.Add(artist);
             dbContext.SaveChanges();
 
-            using var response = await _artist.GetAsync($"/Artists/Details/{artist.Id}"); 
+            using var response = await _client.GetAsync($"/Artists/Details/{artist.Id}"); 
             response.EnsureSuccessStatusCode();
         }
 
@@ -89,7 +89,7 @@ namespace KooliProjekt.IntegrationTests
             };
 
             using var content = new FormUrlEncodedContent(formValues);
-            using var response = await _artist.PostAsync("/Artists/Create", content);
+            using var response = await _client.PostAsync("/Artists/Create", content);
 
             if (response.StatusCode == HttpStatusCode.BadRequest)
             {
@@ -114,7 +114,7 @@ namespace KooliProjekt.IntegrationTests
             };
 
             using var content = new FormUrlEncodedContent(formValues);
-            using var response = await _artist.PostAsync("/Artists/Create", content);
+            using var response = await _client.PostAsync("/Artists/Create", content);
 
             response.EnsureSuccessStatusCode();
 
