@@ -1,6 +1,7 @@
 ﻿using System;
 using KooliProjekt.Controllers;
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -34,6 +35,10 @@ namespace KooliProjekt.IntegrationTests.Helpers
             //services.AddAutoMapper(GetType().Assembly);
             services.AddControllersWithViews()
                     .AddApplicationPart(typeof(HomeController).Assembly);
+
+            services.AddScoped<IArtistService, ArtistService>();
+            services.AddScoped<IShowScheduleService, ShowScheduleService>();
+            services.AddScoped<IMusicTrackService, MusicTrackService>();
 
             //services.AddScoped<IFileClient, LocalFileClient>();
         }

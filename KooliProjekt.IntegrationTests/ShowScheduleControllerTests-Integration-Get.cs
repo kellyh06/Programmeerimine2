@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,12 +14,12 @@ using Xunit;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class MusicTrackControllerTests_Integration_Get : TestBase
+    public class ShowScheduleControllerTests_Integration_Get : TestBase
     {
         private readonly HttpClient _client;
         private readonly ApplicationDbContext _dbContext;
 
-        public MusicTrackControllerTests_Integration_Get()
+        public ShowScheduleControllerTests_Integration_Get()
         {
             var options = new WebApplicationFactoryClientOptions
             {
@@ -34,7 +35,7 @@ namespace KooliProjekt.IntegrationTests
             var scope = Factory.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            dbContext.MusicTracks.RemoveRange(dbContext.MusicTracks);
+            dbContext.ShowSchedule.RemoveRange(dbContext.ShowSchedule);
             dbContext.SaveChanges();
 
             return dbContext;
@@ -43,17 +44,17 @@ namespace KooliProjekt.IntegrationTests
         [Fact]
         public async Task Index_should_return_success()
         {
-            using var response = await _client.GetAsync("/MusicTracks");
+            using var response = await _client.GetAsync("/ShowSchedules");
             response.EnsureSuccessStatusCode();
         }
 
         [Theory]
-        [InlineData("/MusicTracks/Details")]
-        [InlineData("/MusicTracks/Details/100")]
-        [InlineData("/MusicTracks/Delete")]
-        [InlineData("/MusicTracks/Delete/100")]
-        [InlineData("/MusicTracks/Edit")]
-        [InlineData("/MusicTracks/Edit/100")]
+        [InlineData("/ShowSchedules/Details")]
+        [InlineData("/ShowSchedules/Details/100")]
+        [InlineData("/ShowSchedules/Delete")]
+        [InlineData("/ShowSchedules/Delete/100")]
+        [InlineData("/ShowSchedules/Edit")]
+        [InlineData("/ShowSchedules/Edit/100")]
         public async Task Should_return_notfound(string url)
         {
             using var response = await _client.GetAsync(url);
@@ -61,42 +62,35 @@ namespace KooliProjekt.IntegrationTests
         }
 
         [Fact]
-        public async Task Details_should_return_notfound_when_musicTrack_was_not_found()
+        public async Task Details_should_return_notfound_when_showSchedule_was_not_found()
         {
-            using var response = await _client.GetAsync("/MusicTracks/Details/100");
+            using var response = await _client.GetAsync("/ShowSchedules/Details/100");
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
-        public async Task Details_should_return_success_when_musicTrack_was_found()
+        public async Task Details_should_return_success_when_showSchedule_was_found()
         {
             using var dbContext = GetDbContext();
 
-            var musicTrack = new MusicTrack
-            {
-                Title = "MusicTracks",
-                Artist = "Test Artist" // <-- PARANDUS
-            };
-
-            dbContext.MusicTracks.Add(musicTrack);
+            var showSchedule = new ShowSchedule { date = DateTime.UtcNow };
+            dbContext.ShowSchedule.Add(showSchedule);
             dbContext.SaveChanges();
 
-            using var response = await _client.GetAsync($"/MusicTracks/Details/{musicTrack.Id}");
+            using var response = await _client.GetAsync($"/ShowSchedules/Details/{showSchedule.Id}");
             response.EnsureSuccessStatusCode();
         }
 
-
         [Fact]
-        public async Task Create_should_save_new_musicTrack()
+        public async Task Create_should_save_new_showSchedule()
         {
             var formValues = new Dictionary<string, string>
             {
-                { "Title", "MusicTrack" },
-                { "Artist", "Test Artist" }
+                { "date", "2025-04-11" } // peab olema kehtiv kuupäev stringina
             };
 
             using var content = new FormUrlEncodedContent(formValues);
-            using var response = await _client.PostAsync("/MusicTracks/Create", content);
+            using var response = await _client.PostAsync("/ShowSchedules/Create", content);
 
             if (response.StatusCode == HttpStatusCode.BadRequest)
             {
@@ -106,27 +100,29 @@ namespace KooliProjekt.IntegrationTests
 
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
 
-            var artist = _dbContext.MusicTracks.FirstOrDefault();
-            Assert.NotNull(response);
-            Assert.Equal("MusicTrack", artist.Title);
+            var savedShow = _dbContext.ShowSchedule.FirstOrDefault();
+            Assert.NotNull(savedShow);
+            Assert.Equal(new DateTime(2025, 4, 11), savedShow.date);
         }
 
+
         [Fact]
-        public async Task Create_should_not_save_invalid_new_musicTrack()
+        public async Task Create_should_not_save_invalid_new_showSchedule()
         {
             var formValues = new Dictionary<string, string>
             {
-                { "Name", "" }
-
+                { "date", "" } // kehtetu kuupäev
             };
 
             using var content = new FormUrlEncodedContent(formValues);
-            using var response = await _client.PostAsync("/MusicTracks/Create", content);
+            using var response = await _client.PostAsync("/ShowSchedules/Create", content);
 
-            response.EnsureSuccessStatusCode();
+            // Ärge eelda, et see on edukas (nt Redirect), vaid pigem tagastatakse vaade
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             using var dbContext = GetDbContext();
-            Assert.False(dbContext.MusicTracks.Any());
+            Assert.False(dbContext.ShowSchedule.Any());
         }
+
     }
 }
