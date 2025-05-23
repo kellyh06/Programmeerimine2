@@ -94,7 +94,7 @@ namespace KooliProjekt.WpfApp
             {
                 _selectedItem = value;
                 NotifyPropertyChanged();
-                CommandManager.InvalidateRequerySuggested();
+
             }
         }
 
