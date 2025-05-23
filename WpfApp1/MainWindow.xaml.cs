@@ -15,16 +15,11 @@ namespace WpfApp1;
 
 public partial class MainWindow : Window
 {
+    private MainWindowViewModel viewModel;
     public MainWindow()
     {
         InitializeComponent();
-        Loaded += MainWindow_Loaded;
-    }
-
-    private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
-    {
-        var viewModel = new MainWindowViewModel();
-
+        viewModel = new MainWindowViewModel();
         viewModel.ConfirmDelete = _ =>
         {
             var result = MessageBox.Show(
@@ -47,8 +42,15 @@ public partial class MainWindow : Window
         };
 
         DataContext = viewModel;
-        await viewModel.Load();
+
+        // 5. Lae andmed pärast akna laadimist
+        Loaded += MainWindow_Loaded;
     }
 
-}
 
+    private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+
+        await viewModel.Load();
+    }
+}

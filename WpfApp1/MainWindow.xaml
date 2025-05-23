@@ -22,17 +22,15 @@
             Margin="10"
             Grid.Column="1">
             <TextBlock>ID</TextBlock>
-            <TextBox Text="{Binding SelectedItem.Id}" />
+            <TextBox Text="{Binding SelectedItem.Id}"></TextBox>
             <TextBlock>Name</TextBlock>
             <TextBox Text="{Binding SelectedItem.Name}"></TextBox>
-            <StackPanel 
-                HorizontalAlignment="Center"
-                Orientation="Horizontal" 
-                Margin="10">
-                <Button Command="{Binding NewCommand}" Margin="5" Padding="5">New</Button>
-                <Button Command="{Binding SaveCommand}" Margin="5" Padding="5">Save</Button>
-                <Button Command="{Binding DeleteCommand}" Margin="5" Padding="5">Delete</Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                <Button Content="New" Command="{Binding NewCommand}" Margin="5"/>
+                <Button Content="Save" Command="{Binding SaveCommand}" Margin="5"/>
+                <Button Content="Delete" Command="{Binding DeleteCommand}" Margin="5"/>
             </StackPanel>
+
         </StackPanel>
     </Grid>
 </Window>

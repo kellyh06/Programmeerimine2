@@ -26,11 +26,15 @@ namespace WpfApp1.Api
         {
             if (list.Id == 0)
             {
-                await _httpClient.PostAsJsonAsync("Artist", list);
+                await _httpClient.PostAsJsonAsync("Artists", list);
             }
             else
             {
-                await _httpClient.PutAsJsonAsync("Artist/" + list.Id, list);
+                var response = await _httpClient.PutAsJsonAsync("Artists/" + list.Id, list);
+                if(!response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                }
             }
         }
 
