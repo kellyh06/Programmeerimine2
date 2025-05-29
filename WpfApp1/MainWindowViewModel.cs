@@ -34,54 +34,75 @@ namespace KooliProjekt.WpfApp
             );
 
             SaveCommand = new RelayCommand<Artist>(
-                // Execute
                 async list =>
                 {
-                    await _apiClient.Save(SelectedItem);
-                    await Load();
+                    try
+                    {
+                        await _apiClient.Save(SelectedItem);
+                        await Load();
+                    }
+                    catch (Exception ex)
+                    {
+                        OnError?.Invoke(ex.Message);
+                    }
                 },
-                // CanExecute
                 list =>
                 {
                     return SelectedItem != null;
                 }
             );
+
 
             DeleteCommand = new RelayCommand<Artist>(
-                // Execute
                 async list =>
                 {
-                    if (ConfirmDelete != null)
+                    try
                     {
-                        var result = ConfirmDelete(SelectedItem);
-                        if (!result)
+                        if (ConfirmDelete != null)
                         {
-                            return;
+                            var result = ConfirmDelete(SelectedItem);
+                            if (!result)
+                            {
+                                return;
+                            }
                         }
-                    }
 
-                    await _apiClient.Delete(SelectedItem.Id);
-                    Lists.Remove(SelectedItem);
-                    SelectedItem = null;
+                        await _apiClient.Delete(SelectedItem.Id);
+                        Lists.Remove(SelectedItem);
+                        SelectedItem = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        OnError?.Invoke(ex.Message);
+                    }
                 },
-                // CanExecute
                 list =>
                 {
                     return SelectedItem != null;
                 }
             );
+
         }
 
         public async Task Load()
         {
-            Lists.Clear();
-
-            var lists = await _apiClient.List();
-            foreach (var list in lists)
+            try
             {
-                Lists.Add(list);
+                Lists.Clear();
+
+                var artists = await _apiClient.List();
+
+                foreach (var artist in artists)
+                {
+                    Lists.Add(artist);
+                }
+            }
+            catch (Exception ex)
+            {
+                OnError?.Invoke(ex.Message);
             }
         }
+
 
         private Artist _selectedItem;
         public Artist SelectedItem

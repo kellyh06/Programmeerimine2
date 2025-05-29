@@ -1,56 +1,34 @@
-﻿using KooliProjekt.WpfApp;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using WpfApp1.Api;
+﻿using System.Windows;
+using KooliProjekt.WpfApp;
 
-namespace WpfApp1;
-
-public partial class MainWindow : Window
+namespace WpfApp1
 {
-    private MainWindowViewModel viewModel;
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
-        viewModel = new MainWindowViewModel();
-        viewModel.ConfirmDelete = _ =>
+        public MainWindow()
         {
-            var result = MessageBox.Show(
-                            "Are you sure you want to delete selected item?",
-                            "Delete list",
-                            MessageBoxButton.YesNo,
-                            MessageBoxImage.Stop
-                            );
-            return (result == MessageBoxResult.Yes);
-        };
+            InitializeComponent();
 
-        viewModel.OnError = (error) =>
-        {
-            MessageBox.Show(
-                    (string)error,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
+            var vm = new MainWindowViewModel();
+
+            vm.OnError = msg =>
+            {
+                MessageBox.Show(msg.ToString(), "Viga", MessageBoxButton.OK, MessageBoxImage.Error);
+            };
+
+            vm.ConfirmDelete = _ =>
+            {
+                var result = MessageBox.Show(
+                    "Are you sure you want to delete selected item?",
+                    "Delete list",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning
                 );
-        };
+                return result == MessageBoxResult.Yes;
+            };
 
-        DataContext = viewModel;
-
-        // 5. Lae andmed pärast akna laadimist
-        Loaded += MainWindow_Loaded;
-    }
-
-
-    private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
-    {
-
-        await viewModel.Load();
+            DataContext = vm;
+            _ = vm.Load(); // Lae andmed akna avamisel
+        }
     }
 }

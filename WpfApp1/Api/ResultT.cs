@@ -1,4 +1,4 @@
-﻿namespace KooliProjekt.WpfApp.Api
+﻿namespace KooliProjekt.PublicApi
 {
     public class Result<T> : Result
     {
