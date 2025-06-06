@@ -20,7 +20,7 @@ namespace KooliProjekt.PublicApi
 
         public void AddError(string propertyName, string errorMessage)
         {
-            if (Errors.ContainsKey(propertyName))
+            if (!Errors.ContainsKey(propertyName))
             {
                 Errors.Add(propertyName, new List<string>());
             }
