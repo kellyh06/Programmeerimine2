@@ -1,0 +1,39 @@
+﻿@page "/"
+@inherits KooliProjekt.BlazorApp.Pages.Home
+
+<PageTitle>Artists</PageTitle>
+
+<h1>Artists</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (artists == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p><a class="btn btn-primary" href="/create">Add new</a></p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var artist in artists)
+            {
+                <tr>
+                    <td>@artist.Id</td>
+                    <td>@artist.Name</td>
+                    <td>
+                        <a href="/edit/@artist.Id" class="btn btn-primary">Edit</a>
+                        <button class="btn btn-primary" @onclick="() => Delete(artist.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
