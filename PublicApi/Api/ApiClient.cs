@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -14,6 +15,7 @@ namespace KooliProjekt.PublicApi
         public ApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("https://localhost:7136/api/");
         }
 
         public async Task<Result<List<Artist>>> List()
@@ -22,12 +24,11 @@ namespace KooliProjekt.PublicApi
 
             try
             {
-                var data = await _httpClient.GetFromJsonAsync<List<Artist>>("Artists");
-                result.Value = data ?? new List<Artist>();
+                result.Value = await _httpClient.GetFromJsonAsync<List<Artist>>("Artists");
             }
             catch (Exception ex)
             {
-                result.AddError("", ex.Message);
+                result.AddError("_", ex.Message);
             }
 
             return result;
@@ -36,33 +37,24 @@ namespace KooliProjekt.PublicApi
 
         public async Task<Result> Save(Artist artist)
         {
-            var result = new Result();
+            HttpResponseMessage response;
 
-            try
+            if (artist.Id == 0)
             {
-                if (artist.Id == 0)
-                {
-                    var response = await _httpClient.PostAsJsonAsync("Artists", artist);
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        result.AddError("Server", "Failed to create artist");
-                    }
-                }
-                else
-                {
-                    var response = await _httpClient.PutAsJsonAsync($"Artists/{artist.Id}", artist);
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        result.AddError("Server", "Failed to update artist");
-                    }
-                }
+                response = await _httpClient.PostAsJsonAsync("Artists", artist);
             }
-            catch (Exception ex)
+            else
             {
-                result.AddError("Exception", ex.Message);
+                response = await _httpClient.PutAsJsonAsync("Artists/" + artist.Id, artist);
             }
 
-            return result;
+            if (!response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<Result>();
+                return result;
+            }
+
+            return new Result();
         }
 
         public async Task<Result> Delete(int id)
@@ -84,6 +76,5 @@ namespace KooliProjekt.PublicApi
 
             return result;
         }
-
     }
 }

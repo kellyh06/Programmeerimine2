@@ -1,5 +1,8 @@
 ﻿@page "/"
-@inject HttpClient Http
+
+@inject IApiClient apiClient
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavManager
 
 <PageTitle>Artists</PageTitle>
 
@@ -38,35 +41,27 @@ else
     </table>
 }
 
-@code {
-    private List<Artist>? artists;
+@code
+{
+    private List<Artist> artists;
 
     protected override async Task OnInitializedAsync()
     {
-        artists = await Http.GetFromJsonAsync<List<Artist>>("api/artists");
+        var result = await apiClient.List();
+
+        artists = result.Value;
     }
 
-    private async Task Delete(int id)
+    protected async Task Delete(int id)
     {
-        var response = await Http.DeleteAsync($"api/artists/{id}");
-
-        if (response.IsSuccessStatusCode)
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+        if (!confirmed)
         {
-            var artistToRemove = artists?.FirstOrDefault(a => a.Id == id);
-            if (artistToRemove != null)
-            {
-                artists?.Remove(artistToRemove);
-            }
+            return;
         }
-        else
-        {
-            Console.WriteLine($"Kustutamine ebaõnnestus: {response.StatusCode}");
-        }
-    }
 
-    public class Artist
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        await apiClient.Delete(id);
+
+        NavManager.Refresh();
     }
 }
