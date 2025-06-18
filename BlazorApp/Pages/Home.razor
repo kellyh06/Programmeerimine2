@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inherits KooliProjekt.BlazorApp.Pages.Home
+@inject HttpClient Http
 
 <PageTitle>Artists</PageTitle>
 
@@ -30,10 +30,43 @@ else
                     <td>@artist.Name</td>
                     <td>
                         <a href="/edit/@artist.Id" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-primary" @onclick="() => Delete(artist.Id)">Delete</button>
+                        <button class="btn btn-danger" @onclick="() => Delete(artist.Id)">Delete</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+}
+
+@code {
+    private List<Artist>? artists;
+
+    protected override async Task OnInitializedAsync()
+    {
+        artists = await Http.GetFromJsonAsync<List<Artist>>("api/artists");
+    }
+
+    private async Task Delete(int id)
+    {
+        var response = await Http.DeleteAsync($"api/artists/{id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            var artistToRemove = artists?.FirstOrDefault(a => a.Id == id);
+            if (artistToRemove != null)
+            {
+                artists?.Remove(artistToRemove);
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Kustutamine ebaõnnestus: {response.StatusCode}");
+        }
+    }
+
+    public class Artist
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
 }
