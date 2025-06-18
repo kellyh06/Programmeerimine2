@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -11,37 +10,80 @@ namespace KooliProjekt.PublicApi
     {
         private readonly HttpClient _httpClient;
 
-        public ApiClient()
+        // HttpClient tuleb DI kaudu Program.cs failist
+        public ApiClient(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:7136/api/");
+            _httpClient = httpClient;
         }
 
-        public async Task<List<Artist>> List()
+        public async Task<Result<List<Artist>>> List()
         {
-            var result = await _httpClient.GetFromJsonAsync<List<Artist>>("Artists");
-            return result ?? new List<Artist>();
-        }
+            var result = new Result<List<Artist>>();
 
-        public async Task Save(Artist list)
-        {
-            if (list.Id == 0)
+            try
             {
-                await _httpClient.PostAsJsonAsync("Artists", list);
+                var data = await _httpClient.GetFromJsonAsync<List<Artist>>("Artists");
+                result.Value = data ?? new List<Artist>();
             }
-            else
+            catch (Exception ex)
             {
-                var response = await _httpClient.PutAsJsonAsync("Artists/" + list.Id, list);
-                if(!response.IsSuccessStatusCode)
+                result.AddError("", ex.Message);
+            }
+
+            return result;
+        }
+
+
+        public async Task<Result> Save(Artist artist)
+        {
+            var result = new Result();
+
+            try
+            {
+                if (artist.Id == 0)
                 {
-                    var content = await response.Content.ReadAsStringAsync();
+                    var response = await _httpClient.PostAsJsonAsync("Artists", artist);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        result.AddError("Server", "Failed to create artist");
+                    }
+                }
+                else
+                {
+                    var response = await _httpClient.PutAsJsonAsync($"Artists/{artist.Id}", artist);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        result.AddError("Server", "Failed to update artist");
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                result.AddError("Exception", ex.Message);
+            }
+
+            return result;
         }
 
-        public async Task Delete(int id)
+        public async Task<Result> Delete(int id)
         {
-            await _httpClient.DeleteAsync("Artists/" + id);
+            var result = new Result();
+
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"Artists/{id}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    result.AddError("Server", $"Failed to delete artist with ID {id}");
+                }
+            }
+            catch (Exception ex)
+            {
+                result.AddError("Exception", ex.Message);
+            }
+
+            return result;
         }
+
     }
 }

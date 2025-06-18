@@ -5,8 +5,8 @@ namespace KooliProjekt.PublicApi
 {
     public interface IApiClient
     {
-        Task<List<Artist>> List();
-        Task Save(Artist list);
-        Task Delete(int id);
+        Task<Result<List<Artist>>> List();
+        Task<Result> Save(Artist artist);
+        Task<Result> Delete(int id);
     }
 }

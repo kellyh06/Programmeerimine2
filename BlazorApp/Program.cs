@@ -1,4 +1,5 @@
 using BlazorApp;
+using KooliProjekt.PublicApi;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -7,5 +8,6 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5150/api/") });
+builder.Services.AddScoped<IApiClient, ApiClient>();
 
 await builder.Build().RunAsync();

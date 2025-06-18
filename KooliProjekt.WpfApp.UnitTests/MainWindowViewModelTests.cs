@@ -1,5 +1,5 @@
+using KooliProjekt.PublicApi;
 using KooliProjekt.WpfApp;
-using KooliProjekt.WpfApp.Api;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,21 +12,22 @@ namespace KooliProjekt.WpfApp.UnitTests
         [Fact]
         public async Task Load_Populates_List()
         {
-            // Arrange
             var mockApiClient = new Mock<IApiClient>();
+
             var fakeArtists = new List<Artist>
             {
                 new Artist { Id = 1, Name = "Artist 1" },
                 new Artist { Id = 2, Name = "Artist 2" }
             };
-            mockApiClient.Setup(api => api.List()).ReturnsAsync(fakeArtists);
+
+            var fakeResult = new Result<List<Artist>> { Value = fakeArtists };
+
+            mockApiClient.Setup(api => api.List()).ReturnsAsync(fakeResult);
 
             var vm = new MainWindowViewModel(mockApiClient.Object);
 
-            // Act
             await vm.Load();
 
-            // Assert
             Assert.Equal(2, vm.Lists.Count);
             Assert.Equal("Artist 1", vm.Lists[0].Name);
         }
@@ -54,8 +55,18 @@ namespace KooliProjekt.WpfApp.UnitTests
             var artist = new Artist { Id = 1, Name = "Saved Artist" };
             vm.SelectedItem = artist;
 
-            mockApiClient.Setup(a => a.Save(It.IsAny<Artist>())).Returns(Task.CompletedTask);
-            mockApiClient.Setup(a => a.List()).ReturnsAsync(new List<Artist>());
+            // SaveCommand test
+            mockApiClient.Setup(a => a.Save(It.IsAny<Artist>()))
+                .ReturnsAsync(new Result());
+
+            // List() test
+            mockApiClient.Setup(a => a.List())
+                .ReturnsAsync(new Result<List<Artist>> { Value = new List<Artist>() });
+
+            // DeleteCommand test
+            mockApiClient.Setup(a => a.Delete(It.IsAny<int>()))
+                .ReturnsAsync(new Result());
+
 
             // Act
             vm.SaveCommand.Execute(null);
@@ -70,8 +81,6 @@ namespace KooliProjekt.WpfApp.UnitTests
             // Arrange
             var mockApiClient = new Mock<IApiClient>();
             var artist = new Artist { Id = 5, Name = "To be deleted" };
-
-            mockApiClient.Setup(a => a.Delete(artist.Id)).Returns(Task.CompletedTask);
 
             var vm = new MainWindowViewModel(mockApiClient.Object);
             vm.Lists.Add(artist);

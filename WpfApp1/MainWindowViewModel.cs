@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using KooliProjekt.PublicApi;
+using System.Collections.ObjectModel;
+using System.Net.Http;
 using System.Windows.Input;
-using KooliProjekt.WpfApp.Api;
-using WpfApp1.Api;
 
 namespace KooliProjekt.WpfApp
 {
@@ -15,7 +15,7 @@ namespace KooliProjekt.WpfApp
 
         private readonly IApiClient _apiClient;
 
-        public MainWindowViewModel() : this(new ApiClient())
+        public MainWindowViewModel() : this(new ApiClient(new HttpClient()))
         {
         }
 
@@ -92,7 +92,7 @@ namespace KooliProjekt.WpfApp
 
                 var artists = await _apiClient.List();
 
-                foreach (var artist in artists)
+                foreach (var artist in artists.Value)
                 {
                     Lists.Add(artist);
                 }

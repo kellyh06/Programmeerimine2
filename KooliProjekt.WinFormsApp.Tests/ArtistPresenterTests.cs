@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Moq;
 using Xunit;
 using KooliProjekt.WinFormsApp;
-using KooliProjekt.WinFormsApp.Api;
+using KooliProjekt.PublicApi;
 
 namespace KooliProjekt.WinFormsApp.Tests
 {
